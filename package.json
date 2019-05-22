@@ -23,6 +23,8 @@
         "lint-staged": "^8.1.7"
     },
     "devDependencies": {
+        "@commitlint/cli": "^7.6.1",
+        "@commitlint/config-conventional": "^7.6.0",
         "@types/express": "^4.16.1",
         "@types/node": "^12.0.2",
         "@typescript-eslint/eslint-plugin": "^1.9.0",
@@ -39,15 +41,21 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint-staged"
+            "pre-commit": "lint-staged",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
     },
     "lint-staged": {
-      "src/**/*.{ts, tsx}": [
-        "eslint --fix"
-      ],
-      "src/**/*.{ts,tsx,js, jsx,json}": [
-        "prettier --write"
-      ]
+        "src/**/*.{ts, tsx}": [
+            "eslint --fix"
+        ],
+        "src/**/*.{ts,tsx,js, jsx,json}": [
+            "prettier --write"
+        ]
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ]
     }
 }
