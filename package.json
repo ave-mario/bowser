@@ -19,7 +19,8 @@
     },
     "homepage": "https://github.com/ave-mario/bowser#readme",
     "dependencies": {
-        "express": "^4.17.0"
+        "express": "^4.17.0",
+        "lint-staged": "^8.1.7"
     },
     "devDependencies": {
         "@types/express": "^4.16.1",
@@ -38,7 +39,15 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "npm run lint"
+            "pre-commit": "lint-staged"
         }
+    },
+    "lint-staged": {
+      "src/**/*.{ts, tsx}": [
+        "eslint --fix"
+      ],
+      "src/**/*.{ts,tsx,js, jsx,json}": [
+        "prettier --write"
+      ]
     }
 }
