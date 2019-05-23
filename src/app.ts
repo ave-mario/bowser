@@ -1,14 +1,28 @@
 import express from 'express';
-const app = express();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+import initializeDb from './config/mongodb';
 
 const { PORT = 3000 } = process.env;
-app.listen(
-  PORT,
-  (): void => {
-    console.log(`Example app listening on port ${PORT}!`);
-  },
-);
-export default app;
+class App {
+  public app: express.Application;
+
+  public constructor() {
+    this.app = express();
+    this.config();
+  }
+
+  private config(): void {
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+
+    initializeDb((): void => {
+      this.app.listen(
+        PORT,
+        (): void => {
+          console.log(`Example app listening on port ${PORT}!`);
+        },
+      );
+    });
+  }
+}
+
+export default new App().app;
