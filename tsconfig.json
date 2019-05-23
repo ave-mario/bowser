@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es6",
         "module": "commonjs",
         "noImplicitAny": true,
         "declaration": false,
@@ -14,26 +14,14 @@
             "node_modules/@types"
         ],
         "paths": {
-            "*": [
-                "node_modules/@types/*"
-            ],
-            "models": [
-                "src/models"
-            ],
-            "models/*": [
-                "src/models/*"
-            ],
             "config/*": [
                 "src/config/*"
-            ],
-            "api": [
-                "src/api"
             ],
             "api/*": [
                 "src/api/*"
             ],
-            "validation": [
-                "src/validation"
+            "models/*": [
+                "src/models/*"
             ],
             "validation/*": [
                 "src/validation/*"
