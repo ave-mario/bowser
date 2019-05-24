@@ -1,43 +1,29 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "noImplicitAny": true,
-        "declaration": false,
-        "moduleResolution": "node",
-        "sourceMap": false,
-        "outDir": "dist",
-        "pretty": true,
-        "baseUrl": ".",
-        "removeComments": true,
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "paths": {
-            "config/*": [
-                "src/config/*"
-            ],
-            "api/*": [
-                "src/api/*"
-            ],
-            "models/*": [
-                "src/models/*"
-            ],
-            "validation/*": [
-                "src/validation/*"
-            ]
-        },
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "outDir": "dist",
+    "pretty": true,
+    "baseUrl": ".src/",
+    "removeComments": true,
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "config/*": ["config/*"],
+      "api/*": ["api/*"],
+      "models/*": ["models/*"],
+      "validation/*": ["validation/*"],
+      "interfaces": ["interfaces/index.ts"]
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
-    ]
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

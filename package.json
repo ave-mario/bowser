@@ -1,66 +1,69 @@
 {
-    "name": "bowser",
-    "version": "0.0.0",
-    "description": "back-end",
-    "main": "dist/index.js",
-    "scripts": {
-        "prettier": "prettier --write \"*.{js,jsx,ts,tsx,json}\"",
-        "lint": "eslint ./src -c .eslintrc.js --fix --ext ts,tsx,json,js",
-        "lint:fix": "eslint ./src -c .eslintrc.js --ext ts,tsx,json,js",
-        "start": "nodemon ./src/app.ts"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/ave-mario/bowser.git"
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/ave-mario/bowser/issues"
-    },
-    "homepage": "https://github.com/ave-mario/bowser#readme",
-    "dependencies": {
-        "bcrypt": "^3.0.6",
-        "express": "^4.17.0",
-        "mongoose": "^5.5.10",
-        "mongoose-double": "0.0.1"
-    },
-    "devDependencies": {
-        "@commitlint/cli": "^7.6.1",
-        "@commitlint/config-conventional": "^7.6.0",
-        "@types/express": "^4.16.1",
-        "@types/mongoose": "^5.5.1",
-        "@types/node": "^12.0.2",
-        "@typescript-eslint/eslint-plugin": "^1.9.0",
-        "@typescript-eslint/parser": "^1.9.0",
-        "cross-env": "^5.2.0",
-        "eslint": "^5.16.0",
-        "eslint-config-prettier": "^4.3.0",
-        "eslint-plugin-prettier": "^3.1.0",
-        "husky": "^2.3.0",
-        "lint-staged": "^8.1.7",
-        "nodemon": "^1.19.0",
-        "prettier": "^1.17.1",
-        "ts-node": "^8.1.0",
-        "typescript": "^3.4.5"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged",
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-        }
-    },
-    "lint-staged": {
-        "src/**/*.{ts, tsx}": [
-            "npm run lint:fix"
-        ],
-        "src/**/*.{ts,tsx,js, jsx,json}": [
-            "npm run prettier"
-        ]
-    },
-    "commitlint": {
-        "extends": [
-            "@commitlint/config-conventional"
-        ]
+  "name": "bowser",
+  "version": "0.0.0",
+  "description": "back-end",
+  "main": "dist/index.js",
+  "scripts": {
+    "prettier": "prettier --write \"*.{js,jsx,ts,tsx,json}\"",
+    "lint": "eslint ./src -c .eslintrc.js --ext ts,tsx,json,js",
+    "lint:fix": "eslint ./src -c .eslintrc.js --fix --ext ts,tsx,json,js",
+    "start": "nodemon ./src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ave-mario/bowser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ave-mario/bowser/issues"
+  },
+  "homepage": "https://github.com/ave-mario/bowser#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "express": "^4.17.0",
+    "mongoose": "^5.5.10",
+    "mongoose-double": "0.0.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^7.6.1",
+    "@commitlint/config-conventional": "^7.6.0",
+    "@types/bcrypt": "^3.0.0",
+    "@types/express": "^4.16.1",
+    "@types/mongoose": "^5.5.1",
+    "@types/node": "^12.0.2",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
+    "nodemon": "^1.19.0",
+    "prettier": "^1.17.1",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js, jsx,json}": [
+      "npm run prettier",
+      "git add"
+    ],
+    "src/**/*.{ts, tsx,js, jsx,json}": [
+      "npm run lint:fix",
+      "git add"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
 }
