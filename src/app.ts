@@ -14,14 +14,16 @@ class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
 
-    initializeDb((): void => {
-      this.app.listen(
-        PORT,
-        (): void => {
-          console.log(`Example app listening on port ${PORT}!`);
-        },
-      );
-    });
+    initializeDb(
+      (): void => {
+        this.app.listen(
+          PORT,
+          (): void => {
+            console.log(`Example app listening on port ${PORT}!`);
+          }
+        );
+      }
+    );
   }
 }
 
