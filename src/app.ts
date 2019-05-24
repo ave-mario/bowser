@@ -1,12 +1,14 @@
 import express from 'express';
 import initializeDb from './config/mongodb';
-
-const { PORT = 3000 } = process.env;
+import router from './routes';
+import logger from 'morgan';
+const { PORT = 3001 } = process.env;
 class App {
   public app: express.Application;
 
   public constructor() {
     this.app = express();
+    this.app.use(logger('dev'));
     this.config();
   }
 
@@ -16,12 +18,8 @@ class App {
 
     initializeDb(
       (): void => {
-        this.app.listen(
-          PORT,
-          (): void => {
-            console.log(`Example app listening on port ${PORT}!`);
-          }
-        );
+        this.app.use('/api/', router);
+        this.app.listen(PORT);
       }
     );
   }

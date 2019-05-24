@@ -1,9 +1,14 @@
 import { Schema, Model, model } from 'mongoose';
 import { IClient } from '../interfaces';
+import { statusUsers } from '../config/emuns';
 
 const schema: Schema = new Schema(
   {
-    fullName: {
+    name: {
+      type: String,
+      required: true
+    },
+    surname: {
       type: String,
       required: true
     },
@@ -18,12 +23,12 @@ const schema: Schema = new Schema(
       trim: true
     },
     address: {
-      type: String,
-      required: true
+      type: String
     },
     status: {
       type: Number,
-      required: true
+      required: true,
+      default: statusUsers.Active
     },
     loginCode: {
       type: String,

@@ -1,10 +1,24 @@
-import { Schema, Model, model } from 'mongoose';
-import { IEmployee } from '../interfaces';
+import { Schema, Model, model, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
+import { IEmployee } from '../interfaces';
+import { Validate } from '../config/emuns';
+import { statusUsers } from '../config/emuns';
+
+interface IEmployeeModel extends IEmployee, Document {
+  comparePassword(candidatePassword: string): Promise<Error | boolean>;
+}
 
 const schema: Schema = new Schema(
   {
-    fullName: {
+    name: {
+      type: String,
+      required: true
+    },
+    surname: {
+      type: String,
+      required: true
+    },
+    patronymic: {
       type: String,
       required: true
     },
@@ -16,7 +30,8 @@ const schema: Schema = new Schema(
     },
     password: {
       type: String,
-      required: true
+      required: true,
+      validate: Validate.password
     },
     phoneNumber: {
       type: String,
@@ -29,7 +44,8 @@ const schema: Schema = new Schema(
     },
     status: {
       type: Number,
-      required: true
+      required: true,
+      default: statusUsers.Active
     }
   },
   {
@@ -72,4 +88,4 @@ schema.set('toObject', {
   }
 });
 
-export const Employee: Model<IEmployee> = model<IEmployee>('Employees', schema);
+export const Employee: Model<IEmployeeModel> = model<IEmployeeModel>('Employees', schema);
