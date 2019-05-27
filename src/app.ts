@@ -1,6 +1,7 @@
 import express from 'express';
 import initializeDb from './config/mongodb';
 import router from './routes';
+import { Passport, initialize } from './config/passport';
 import logger from 'morgan';
 const { PORT = 3001 } = process.env;
 class App {
@@ -18,6 +19,8 @@ class App {
 
     initializeDb(
       (): void => {
+        this.app.use(initialize());
+        Passport.jwtStrategy();
         this.app.use('/api/', router);
         this.app.listen(PORT);
       }

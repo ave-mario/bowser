@@ -23,8 +23,10 @@
     "bcrypt": "^3.0.6",
     "express": "^4.17.0",
     "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.10",
-    "mongoose-double": "0.0.1"
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.6.1",
@@ -35,6 +37,8 @@
     "@types/mongoose": "^5.5.1",
     "@types/morgan": "^1.7.35",
     "@types/node": "^12.0.2",
+    "@types/passport": "^1.0.0",
+    "@types/passport-jwt": "^3.0.1",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "@typescript-eslint/parser": "^1.9.0",
     "cross-env": "^5.2.0",

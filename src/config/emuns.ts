@@ -1,6 +1,12 @@
 export enum statusUsers {
-  Active = 1,
-  Bloking = 2
+  ChangePassword = 1,
+  Active = 2,
+  Bloking = 3
+}
+
+export enum Roles {
+  Client = 'client',
+  Employee = 'employee'
 }
 
 export const Validate = {

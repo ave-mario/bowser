@@ -1,3 +1,4 @@
+import { IClient } from './client.interface';
 export interface IEmployee {
   name: string;
   surname: string;
@@ -10,7 +11,6 @@ export interface IEmployee {
 }
 
 export interface IEmployeeFieldsToRegister {
-  fullName: string;
   name: string;
   surname: string;
   patronymic: string;
@@ -22,4 +22,15 @@ export interface IEmployeeFieldsToRegister {
 export interface IEmployeeToLogin {
   email: string;
   password: string;
+}
+
+export interface IUserResponseLogin {
+  user: IEmployee | IClient;
+  tokens: {
+    accessToken: string;
+  };
+}
+
+export interface IUser {
+  user: IEmployee | IClient;
 }

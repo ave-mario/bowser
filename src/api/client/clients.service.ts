@@ -1,13 +1,23 @@
 import { Client } from '../../models';
-import { IClientFieldsToRegister, IClient, IClientToLogin, IError } from '../../interfaces';
+import {
+  IClientFieldsToRegister,
+  IUserResponseLogin,
+  IClientToLogin,
+  Error,
+  IClient,
+  IUserService,
+  IUser
+} from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
+import { JsonTokens, Roles } from '../../config';
 
-class ClientService {
-  public async registerClient(data: IClientFieldsToRegister): Promise<IError> {
+class ClientService implements IUserService {
+  public async register(data: IClientFieldsToRegister): Promise<Error> {
     try {
-      const client = await Client.findOne({ $or: [{ phoneNumber: data.phoneNumber }, { email: data.email }] });
-      if (client) return logicErr.userIsAlreadyRegistered;
-
+      const client = await Client.findOne({
+        $or: [{ phoneNumber: data.phoneNumber }, { email: data.email }]
+      });
+      if (client) return new Error(logicErr.userIsAlreadyRegistered);
       const newClient = new Client({
         name: data.name,
         surname: data.surname,
@@ -17,21 +27,52 @@ class ClientService {
       });
       await newClient.save();
     } catch (error) {
-      return technicalErr.databaseCrash;
+      return new Error(technicalErr.databaseCrash);
     }
   }
 
-  public async loginClient(data: IClientToLogin): Promise<IClient | IError> {
+  public async login(data: IClientToLogin): Promise<Error | IUserResponseLogin> {
     try {
       const client = await Client.findOne({ phoneNumber: data.phoneNumber });
-      if (!client) return logicErr.notFoundUser;
+      if (!client) return new Error(logicErr.notFoundUser);
       if (client.loginCode !== data.loginCode) {
-        return logicErr.wrongCodeToLogin;
+        return new Error(logicErr.wrongCodeToLogin);
       }
       const clientObj = client.toObject();
-      return clientObj;
+      const accessToken: string = JsonTokens.generateAccessToken(
+        clientObj._id,
+        Roles.Client
+      );
+      return {
+        user: clientObj,
+        tokens: {
+          accessToken
+        }
+      };
     } catch {
-      return technicalErr.databaseCrash;
+      return new Error(technicalErr.databaseCrash);
+    }
+  }
+
+  public async generateLoginCode(phoneNumber: string): Promise<Error | boolean> {
+    try {
+      const client = await Client.findOne({ phoneNumber });
+      if (!client) return new Error(logicErr.notFoundUser);
+      //add to send sms for client
+      client.loginCode = '123456';
+      await client.save();
+    } catch (error) {
+      return new Error(technicalErr.databaseCrash);
+    }
+  }
+
+  public async getCurrent(data: IClient): Promise<Error | IUser> {
+    try {
+      if (!data) return new Error(logicErr.notFoundUser);
+      const dataObj = data.toObject();
+      return dataObj;
+    } catch (error) {
+      return new Error(technicalErr.databaseCrash);
     }
   }
 }

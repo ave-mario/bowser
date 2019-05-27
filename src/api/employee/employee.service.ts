@@ -1,12 +1,21 @@
-import { Employee } from '../../models';
-import { IEmployeeFieldsToRegister, IError, IEmployeeToLogin, IEmployee } from '../../interfaces';
+import { Employee, IEmployeeModel } from '../../models';
+import {
+  IEmployeeFieldsToRegister,
+  Error,
+  IUserResponseLogin,
+  IEmployeeToLogin,
+  IUserService,
+  IUser,
+  IEmployee
+} from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
+import { JsonTokens, Roles } from '../../config';
 
-class EmployeeService {
-  public async register(data: IEmployeeFieldsToRegister): Promise<IError> {
+class EmployeeService implements IUserService {
+  public async register(data: IEmployeeFieldsToRegister): Promise<Error> {
     try {
       const employee = await Employee.findOne({ email: data.email });
-      if (employee) return logicErr.userIsAlreadyRegistered;
+      if (employee) return new Error(logicErr.userIsAlreadyRegistered);
 
       const newEmployee = new Employee({
         name: data.name,
@@ -20,23 +29,42 @@ class EmployeeService {
 
       await newEmployee.save();
     } catch (error) {
-      return technicalErr.databaseCrash;
+      return new Error(technicalErr.databaseCrash);
     }
   }
 
-  public async loginClient(data: IEmployeeToLogin): Promise<IEmployee | IError> {
+  public async login(data: IEmployeeToLogin): Promise<IUserResponseLogin | Error> {
     try {
       const employee = await Employee.findOne({ email: data.email })
         .select('+password')
         .exec();
-      if (!employee) return logicErr.notFoundUser;
+      if (!employee) return new Error(logicErr.notFoundUser);
       let success = await employee.comparePassword(data.password);
-      if (!success) return logicErr.notFoundUser;
+      if (!success) return new Error(logicErr.notFoundUser);
 
       const clientObj = employee.toObject();
-      return clientObj;
+      const accessToken: string = JsonTokens.generateAccessToken(
+        clientObj._id,
+        Roles.Employee
+      );
+      return {
+        user: clientObj,
+        tokens: {
+          accessToken
+        }
+      };
     } catch {
-      return technicalErr.databaseCrash;
+      return new Error(technicalErr.databaseCrash);
+    }
+  }
+
+  public async getCurrent(data: IEmployeeModel): Promise<Error | IUser> {
+    try {
+      if (!data) return new Error(logicErr.notFoundUser);
+      const dataObj = data.toObject();
+      return dataObj;
+    } catch (error) {
+      return new Error(technicalErr.databaseCrash);
     }
   }
 }

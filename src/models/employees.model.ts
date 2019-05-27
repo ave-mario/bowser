@@ -4,7 +4,7 @@ import { IEmployee } from '../interfaces';
 import { Validate } from '../config/emuns';
 import { statusUsers } from '../config/emuns';
 
-interface IEmployeeModel extends IEmployee, Document {
+export interface IEmployeeModel extends IEmployee, Document {
   comparePassword(candidatePassword: string): Promise<Error | boolean>;
 }
 
@@ -45,7 +45,7 @@ const schema: Schema = new Schema(
     status: {
       type: Number,
       required: true,
-      default: statusUsers.Active
+      default: statusUsers.ChangePassword
     }
   },
   {
@@ -84,7 +84,6 @@ schema.set('toObject', {
   transform: function(doc: {}, ret: any): void {
     delete ret.__v;
     delete ret.password;
-    delete ret.verificationCode;
   }
 });
 

@@ -1,22 +1,37 @@
 import { Request, Response } from 'express';
 import ClientService from './clients.service';
+import { Error } from '../../interfaces';
 
 class ClientController {
   public postRegister(req: Request, res: Response): void {
-    let status: number;
-    ClientService.registerClient(req.body).then(result =>
+    ClientService.register(req.body).then(result =>
       !result
-        ? res.status(201).json({ status: 'success' })
-        : (result.code >= 2000 ? (status = 500) : (status = 400)) &&
-          res.status(status).json({ message: result.msg, status: 'error' })
+        ? res.status(201).json({ success: true })
+        : res.status(result.status).json({ message: result.message, success: false })
     );
   }
 
   public login(req: Request, res: Response): void {
-    ClientService.loginClient(req.body).then(result =>
-      !result.hasOwnProperty('code')
-        ? res.status(200).json(result)
-        : res.status(400).json({ message: result, status: 'error' })
+    ClientService.login(req.body).then(result =>
+      !(result instanceof Error)
+        ? res.status(200).json({ ...result, success: true })
+        : res.status(result.status).json({ message: result.message, success: false })
+    );
+  }
+
+  public sendCode(req: Request, res: Response): void {
+    ClientService.generateLoginCode(req.body.phoneNumber).then(result =>
+      !(result instanceof Error)
+        ? res.status(200).json({ success: true })
+        : res.status(result.status).json({ message: result.message, success: false })
+    );
+  }
+
+  public getCurrent(req: Request, res: Response): void {
+    ClientService.getCurrent(req.user).then(result =>
+      !(result instanceof Error)
+        ? res.status(200).json({ user: result, success: true })
+        : res.status(result.status).json({ message: result.message, success: false })
     );
   }
 }

@@ -1,9 +1,9 @@
 export enum LogicErrCodes {
-  UserIsAlreadyRegistered = 1001,
-  NotFoundUser = 1002,
-  WrongCodeToLogin = 1003
+  UserIsAlreadyRegistered = 400,
+  NotFoundUser = 404,
+  WrongCodeToLogin = 404
 }
 
 export enum TechnicalErrCodes {
-  DatabaseCrash = 2000
+  DatabaseCrash = 500
 }
