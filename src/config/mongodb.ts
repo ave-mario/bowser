@@ -1,14 +1,15 @@
 import mongoose from 'mongoose';
-const env = process.env.NODE_ENV || 'development';
-const mongoHost = 'mongodb://127.0.0.1:27017/hotel';
+import { config } from './environment';
+
+const { environment, mongoHost } = config.app;
 const options = {
   useNewUrlParser: true
 };
 
-export default function connect(callback: (mongo: any) => void): void {
+export function initializeDb(callback: (mongo: any) => void): void {
   mongoose.Promise = global.Promise;
 
-  if (env === 'development') mongoose.set('debug', true);
+  if (environment === 'development') mongoose.set('debug', true);
 
   mongoose.set('useCreateIndex', true);
 

@@ -1,9 +1,11 @@
 import jwt from 'jsonwebtoken';
-import { Enviroinment } from './environment';
+import { config } from './environment';
 
 export class JsonTokens {
   public static generateAccessToken(_id: string, role: string): any {
-    const token = jwt.sign({ id: _id, role }, Enviroinment.jwtSecret, { expiresIn: Enviroinment.expiresIn });
+    const token = jwt.sign({ id: _id, role }, config.jwt.secret, {
+      expiresIn: config.jwt.expiration
+    });
 
     return token;
   }

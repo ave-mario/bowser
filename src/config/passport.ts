@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Roles } from './emuns';
-import { Enviroinment } from './environment';
+import { config } from './environment';
 import { Client, Employee } from '../models';
 import { IClient, IEmployee } from '../interfaces';
 
@@ -9,24 +9,33 @@ export class Passport {
   public static jwtStrategy(): void {
     let option = {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: Enviroinment.jwtSecret
+      secretOrKey: config.jwt.secret
     };
 
     passport.use(
-      new Strategy(option, (token: any, done: (error: Error | null, data: IEmployee | IClient | boolean) => void) => {
-        let userId: string = token.id;
-        return Passport.getUser(token.role, userId).then(data => {
-          if (data) {
-            return done(null, data);
-          } else {
-            return done(null, false);
-          }
-        });
-      })
+      new Strategy(
+        option,
+        (
+          token: any,
+          done: (error: Error | null, data: IEmployee | IClient | boolean) => void
+        ) => {
+          let userId: string = token.id;
+          return Passport.getUser(token.role, userId).then(data => {
+            if (data) {
+              return done(null, data);
+            } else {
+              return done(null, false);
+            }
+          });
+        }
+      )
     );
   }
 
-  private static async getUser(role: string, userId: string): Promise<IClient | IEmployee> {
+  private static async getUser(
+    role: string,
+    userId: string
+  ): Promise<IClient | IEmployee> {
     let user: IClient | IEmployee;
     if (role === Roles.Client) {
       user = await Client.findById(userId);

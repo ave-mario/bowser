@@ -1,9 +1,9 @@
 import express, { Response, Request, NextFunction } from 'express';
-import initializeDb from './config/mongodb';
+import { initializeDb, config } from './config';
 import router from './routes';
 import { Passport, initialize } from './config/passport';
 import logger from 'morgan';
-const { PORT = 3001 } = process.env;
+const { port } = config.app;
 class App {
   public app: express.Application;
 
@@ -23,7 +23,7 @@ class App {
         this.app.use(initialize());
         Passport.jwtStrategy();
         this.app.use('/api/', router);
-        this.app.listen(PORT);
+        this.app.listen(port);
       }
     );
   }
