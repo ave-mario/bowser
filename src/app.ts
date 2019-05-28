@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Response, Request } from 'express';
 import initializeDb from './config/mongodb';
 import router from './routes';
 import { Passport, initialize } from './config/passport';
@@ -10,6 +10,7 @@ class App {
   public constructor() {
     this.app = express();
     this.app.use(logger('dev'));
+    this.configCors();
     this.config();
   }
 
@@ -23,6 +24,17 @@ class App {
         Passport.jwtStrategy();
         this.app.use('/api/', router);
         this.app.listen(PORT);
+      }
+    );
+  }
+
+  private configCors(): void {
+    this.app.use(
+      (req: Request, res: Response, next: () => void): void => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Methods', 'GET, POST');
+        res.append('Access-Control-Allow-Headers', 'Content-Type');
+        next();
       }
     );
   }
