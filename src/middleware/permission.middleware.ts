@@ -1,5 +1,6 @@
 import { authenticateJwt } from '../config';
-import { Response, Request } from 'express';
+import { logicErr } from '../errors';
+import { Response, Request, NextFunction } from 'express';
 
 export function permit(roles: string[] = []) {
   if (typeof roles === 'string') {
@@ -8,9 +9,9 @@ export function permit(roles: string[] = []) {
 
   return [
     authenticateJwt(),
-    (req: Request, res: Response, next: () => void) => {
+    (req: Request, res: Response, next: NextFunction) => {
       if (roles.length && !roles.includes(req.user.role)) {
-        return res.status(401).send({ message: 'Forbidden', success: false });
+        return res.status(401).send({ message: logicErr.forbidden.msg, success: false });
       }
       next();
     }

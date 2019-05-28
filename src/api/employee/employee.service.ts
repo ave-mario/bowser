@@ -5,8 +5,7 @@ import {
   IUserResponseLogin,
   IEmployeeToLogin,
   IUserService,
-  IUser,
-  IEmployee
+  IUser
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens, Roles } from '../../config';

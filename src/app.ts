@@ -1,4 +1,4 @@
-import express, { Response, Request } from 'express';
+import express, { Response, Request, NextFunction } from 'express';
 import initializeDb from './config/mongodb';
 import router from './routes';
 import { Passport, initialize } from './config/passport';
@@ -30,7 +30,7 @@ class App {
 
   private configCors(): void {
     this.app.use(
-      (req: Request, res: Response, next: () => void): void => {
+      (req: Request, res: Response, next: NextFunction): void => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'GET, POST');
         res.append('Access-Control-Allow-Headers', 'Content-Type');
@@ -38,6 +38,10 @@ class App {
       }
     );
   }
+
+  public getServer() {
+    return this.app;
+  }
 }
 
-export default new App().app;
+export default new App();

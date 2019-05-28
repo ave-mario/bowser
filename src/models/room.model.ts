@@ -69,7 +69,7 @@ const schema = new Schema(
   }
 );
 
-schema.post('save', function(error: any, doc: any, next: any): void {
+schema.post('save', function(error: any, doc: any, next: (err: Error) => void): void {
   if (error.name === 'MongoError' && error.code === 11000) {
     next(new Error('Room alredy exist'));
   } else {

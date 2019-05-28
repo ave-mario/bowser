@@ -12,5 +12,8 @@ export const logicErr = {
   wrongCodeToLogin: {
     code: LogicErrCodes.WrongCodeToLogin,
     msg: 'Wrong code in login'
+  },
+  forbidden: {
+    msg: 'Forbidden'
   }
 };

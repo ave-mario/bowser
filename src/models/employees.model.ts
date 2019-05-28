@@ -2,6 +2,7 @@ import { Schema, Model, model, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IEmployee } from '../interfaces';
 import { Validate } from '../config/emuns';
+import { logicErr } from '../errors';
 import { statusUsers } from '../config/emuns';
 
 export interface IEmployeeModel extends IEmployee, Document {
@@ -63,13 +64,16 @@ function hashPassword(next: () => void) {
 schema.pre('save', hashPassword);
 schema.pre('update', hashPassword);
 
-schema.post('save', function(error: any, doc: any, next: (error: Error) => void): void {
-  if (error.name === 'MongoError' && error.code === 11000) {
-    next(new Error('User alresdy exist'));
-  } else {
-    next(error);
+schema.post(
+  'save',
+  (error: any, doc: any, next: (error: Error) => void): void => {
+    if (error.name === 'MongoError' && error.code === 11000) {
+      next(new Error(logicErr.userIsAlreadyRegistered.msg));
+    } else {
+      next(error);
+    }
   }
-});
+);
 
 schema.methods.comparePassword = function(candidatePassword: string) {
   return new Promise((resolve, reject) => {
