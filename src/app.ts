@@ -23,7 +23,9 @@ class App {
         this.app.use(initialize());
         Passport.jwtStrategy();
         this.app.use('/api/', router);
-        this.app.listen(port);
+        this.app.listen(port, () => {
+          console.log(`API PORT ${port}`);
+        });
       }
     );
   }

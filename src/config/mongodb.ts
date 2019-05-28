@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { config } from './environment';
 
-const { environment, mongoHost } = config.app;
+const { app, mongo } = config;
 const options = {
   useNewUrlParser: true
 };
@@ -9,12 +9,12 @@ const options = {
 export function initializeDb(callback: (mongo: any) => void): void {
   mongoose.Promise = global.Promise;
 
-  if (environment === 'development') mongoose.set('debug', true);
+  if (app.environment === 'development') mongoose.set('debug', true);
 
   mongoose.set('useCreateIndex', true);
 
   mongoose.connection.on('connected', function(): void {
-    console.log('Mongoose default connection open to ' + mongoHost);
+    console.log('Mongoose default connection open to ' + mongo.host);
   });
 
   mongoose.connection.on('error', function(err: Error): void {
@@ -26,7 +26,7 @@ export function initializeDb(callback: (mongo: any) => void): void {
   });
 
   mongoose
-    .connect(mongoHost, options)
+    .connect(mongo.host, options)
     .then(
       (): void => {
         callback(mongoose);
