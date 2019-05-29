@@ -1,29 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
     "noImplicitAny": true,
-    "declaration": false,
+    "declaration": true,
     "moduleResolution": "node",
     "sourceMap": false,
     "outDir": "dist",
     "pretty": true,
-    "baseUrl": ".src/",
+    "types": ["jest", "node"],
+    "baseUrl": ".",
     "removeComments": true,
     "typeRoots": ["node_modules/@types"],
-    "paths": {
-      "config/*": ["config/*"],
-      "api/*": ["api/*"],
-      "models/*": ["models/*"],
-      "validation/*": ["validation/*"],
-      "interfaces": ["interfaces/index.ts"]
-    },
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "e2e/**/*"],
   "exclude": ["node_modules", "dist"]
 }
