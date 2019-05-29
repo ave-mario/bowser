@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import { object, string, number, validate } from 'joi';
 
+var DOT_ENV_FILE = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
+
 const schema = object({
   NODE_ENV: string()
     .valid('development', 'test', 'production')
@@ -13,7 +15,7 @@ const schema = object({
   .unknown()
   .required();
 
-dotenv.config();
+dotenv.config({ path: DOT_ENV_FILE });
 
 const { error, value: envVars } = validate(process.env, schema);
 
