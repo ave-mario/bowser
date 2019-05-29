@@ -1,14 +1,29 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "noImplicitAny": true,
-        "moduleResolution": "node",
-        "sourceMap": false,
-        "outDir": "dist",
-        "pretty": true,
-        "baseUrl": "."
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "outDir": "dist",
+    "pretty": true,
+    "baseUrl": ".src/",
+    "removeComments": true,
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "config/*": ["config/*"],
+      "api/*": ["api/*"],
+      "models/*": ["models/*"],
+      "validation/*": ["validation/*"],
+      "interfaces": ["interfaces/index.ts"]
     },
-    "include": ["src/**/*"],
-    "exclude": ["./node_modules"]
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
