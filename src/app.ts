@@ -35,15 +35,14 @@ class App {
       (req: Request, res: Response, next: NextFunction): void => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'GET, POST');
-        res.append('Access-Control-Allow-Headers', 'Content-Type');
+        res.append(
+          'Access-Control-Allow-Headers',
+          'Content-Type, Authorization, Origin,Accepts'
+        );
         next();
       }
     );
   }
-
-  public getServer() {
-    return this.app;
-  }
 }
 
-export default new App();
+export default new App().app;

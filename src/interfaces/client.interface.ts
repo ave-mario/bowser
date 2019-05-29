@@ -12,7 +12,7 @@ export interface IClient extends Document {
   googleId?: string;
   vkontakteId?: string;
   created_at: string;
-  uptated_at: string;
+  updated_at: string;
 }
 export interface IClientFieldsToRegister {
   name: string;
