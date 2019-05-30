@@ -1,5 +1,4 @@
-defaults: &defaults
-  #working_directory: ./circleci
+defaults: &defaults #working_directory: ./circleci
   docker:
     - image: circleci/node:10
 
@@ -34,32 +33,40 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: npm run build
+      - run: 
+      name: Build Artefact
+      command: npm run build
       - persist_to_workspace:
           root: .
           paths:
             - build
-  unit:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run: npm run test
-  e2e:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run: npm run e2e
   lint:
     <<: *defaults
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - run: npm run lint
+      - run:
+          name: Code Linting
+          command: npm run lint
+  unit:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Unit Tests
+          command: npm run test
+  e2e:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run End-to-End Tests
+          command: npm run e2e
 workflows:
   version: 2
   build_accept_deploy:
