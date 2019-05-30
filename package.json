@@ -8,9 +8,9 @@
     "lint:fix": "eslint ./src -c .eslintrc.js --fix --ext ts,tsx,json,js",
     "prettier": "prettier --write \"*.{js,jsx,ts,tsx,json}\"",
     "start": "nodemon ./src/app.ts",
-    "test": "cross-env NODE_ENV=test jest --forceExit",
-    "test:watch": "jest --watch",
-    "test:coverage": "npm run lint && npm run test --coverage --no-cache"
+    "e2e": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles",
+    "e2e:watch": "jest --watch",
+    "e2e:coverage": "npm run lint && npm run test --coverage --no-cache"
   },
   "engines": {
     "node": "10"
