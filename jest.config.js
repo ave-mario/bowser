@@ -1,12 +1,16 @@
 module.exports = {
-  roots: ['<rootDir>'],
+  roots: ['<rootDir>/e2e/'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.(tsx|ts)?$': 'ts-jest'
   },
-  testRegex: '(/e2e/.*|(\\.|/)(test|spec))\\.(js|ts|tsx)?$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testEnvironment: 'node',
-  coveragePathIgnorePatterns: ['/node_modules/', '/e2e/'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/e2e/', '/.vscode/', '/.github/'],
   coverageDirectory: './coverage/',
-  collectCoverage: true
+  collectCoverage: true,
+  coverageThreshold: {
+    global: {
+      lines: 60
+    }
+  }
 };

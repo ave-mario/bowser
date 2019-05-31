@@ -7,10 +7,10 @@
     "lint": "eslint ./src -c .eslintrc.js --ext ts,tsx,json,js",
     "lint:fix": "eslint ./src -c .eslintrc.js --fix --ext ts,tsx,json,js",
     "prettier": "prettier --write \"*.{js,jsx,ts,tsx,json}\"",
-    "start": "nodemon ./src/app.ts",
-    "e2e": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles",
+    "start": "nodemon ./src/server.ts",
+    "e2e": "cross-env NODE_ENV=test jest --verbose",
     "e2e:watch": "jest --watch",
-    "e2e:coverage": "npm run lint && npm run test --coverage --no-cache"
+    "e2e:coverage": "npm run lint && npm run e2e --coverage --no-cache"
   },
   "engines": {
     "node": "10"
@@ -51,6 +51,7 @@
     "@types/supertest": "^2.0.7",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "@typescript-eslint/parser": "^1.9.0",
+    "chai-http": "^4.3.0",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.3.0",

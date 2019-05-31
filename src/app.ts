@@ -1,9 +1,7 @@
 import express, { Response, Request, NextFunction } from 'express';
-import { initializeDb, config } from './config';
+import { initializeDb, Passport, initialize } from './config';
 import router from './routes';
-import { Passport, initialize } from './config/passport';
 import logger from 'morgan';
-const { port } = config.app;
 class App {
   public app: express.Application;
 
@@ -17,17 +15,10 @@ class App {
   private config(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-
-    initializeDb(
-      (): void => {
-        this.app.use(initialize());
-        Passport.jwtStrategy();
-        this.app.use('/api/', router);
-        this.app.listen(port, () => {
-          console.log(`API PORT ${port}`);
-        });
-      }
-    );
+    this.app.use(initialize());
+    Passport.jwtStrategy();
+    this.app.use('/api/', router);
+    initializeDb((): void => {});
   }
 
   private configCors(): void {
