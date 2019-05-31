@@ -1,97 +1,67 @@
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
-import { IEmployeeFieldsToRegister, IEmployeeToLogin } from '../src/interfaces';
+import { IEmployeeToLogin, IEmployeeFieldsToRegister } from '../src/interfaces';
 import request from 'supertest';
+import server from '../src/app';
 
-export class TestEmployee {
-  private _agent: request.SuperTest<request.Test>;
-  private _token: string;
+const agent = request.agent(server);
 
-  constructor(agent: request.SuperTest<request.Test>) {
-    this._agent = agent;
-  }
+let token = '';
+const newEmployee: IEmployeeFieldsToRegister = {
+  name: 'Aiden',
+  surname: 'Anderson',
+  patronymic: 'Bahringer',
+  email: 'Aiden.Anderson.2019@mail.ru',
+  phoneNumber: '+375295106978',
+  address: 'Lake Kamille, 897 Stoltenberg Tunnel'
+};
 
-  public startTets() {
-    describe('The client path', () => {
-      this.testRegister();
-      this.testLogin();
-      this.testGetUSer();
+describe('Employee routes', () => {
+  describe('POST /api/employees is registration', () => {
+    it('When this client already exist with email status 400', () => {
+      agent
+        .post('/api/employees/')
+        .send(newEmployee)
+        .expect(400);
     });
-  }
-
-  private testRegister(): void {
-    describe('POST /api/employees is registration', () => {
-      describe('if the all field not valid', () => {
-        it('It should response have status 201', async () => {
-          const client: IEmployeeFieldsToRegister = {
-            name: 'Aiden',
-            surname: 'Anderson',
-            patronymic: 'Bahringer',
-            email: 'Aiden.Anderson.6@mail.ru',
-            phoneNumber: '+375295108429',
-            address: 'Malawi, East Felipamouth, 324 Anita Plaza'
-          };
-          await this._agent
-            .post('/api/employees/')
-            .send(client)
-            .expect(201);
-        });
-      });
-
-      describe('if not have address', () => {
-        it('It should response have status 400', async () => {
-          const client = {
-            name: 'Aiden',
-            surname: 'Anderson',
-            patronymic: 'Bahringer',
-            email: 'Aiden.Anderson.ru',
-            phoneNumber: '+375295108429'
-          };
-          await this._agent
-            .post('/api/employees/')
-            .send(client)
-            .expect(400);
-        });
-      });
+    it('When not have this client status 201', () => {
+      agent
+        .post('/api/employees')
+        .send(newEmployee)
+        .expect(201);
     });
-  }
 
-  private testLogin(): void {
-    describe('POST /api/employees/login', () => {
-      describe('if the phoneNumber is valid', () => {
-        it('It should response have status 200', async () => {
-          const client: IEmployeeToLogin = {
-            email: 'Aiden.Anderson.6@mail.ru',
-            password: '123456QWE'
-          };
-          await this._agent
-            .post('/api/employees/login')
-            .send(client)
-            .expect(200)
-            .then(response => {
-              this._token = response.body.tokens.accessToken;
-            });
-        });
-      });
+    it('When not have address: status 400', () => {
+      const employeeWithouAddress = newEmployee;
+      delete employeeWithouAddress.address;
+      agent
+        .post('/api/employees/')
+        .send(employeeWithouAddress)
+        .expect(400);
     });
-  }
+  });
 
-  private testGetUSer(): void {
-    describe('GET /api/employees/current', () => {
-      describe('the token is', () => {
-        it('valid: It should response have status 401', async () => {
-          await this._agent
-            .get('/api/employees/current')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6I')
-            .expect(401);
+  describe('POST /api/employees/login', () => {
+    it('When user is exist:  status 200', async () => {
+      const client: IEmployeeToLogin = {
+        email: newEmployee.email,
+        password: '12345QWE'
+      };
+      await agent
+        .post('/api/employees/login')
+        .send(client)
+        .expect(200)
+        .then(response => {
+          token = response.body.tokens.accessToken;
         });
-        it('not valid: It should response have status 200', async () => {
-          await this._agent
-            .get('/api/employees/current')
-            .set('Content-Type', 'application/json')
-            .set('Authorization', 'Bearer ' + this._token)
-            .expect(200);
-        });
-      });
     });
-  }
-}
+  });
+
+  describe('GET /api/employees/current', () => {
+    it('Better: Token is not valid: status 200', () => {
+      agent
+        .get('/api/employees/current')
+        .set('Content-Type', 'application/json')
+        .set('Authorization', 'Bearer ' + token)
+        .expect(200);
+    });
+  });
+});

@@ -1,16 +1,10 @@
 import request from 'supertest';
-import app from '../src/app';
-import { TestClient } from './client.test';
-import { TestEmployee } from './employee.test';
+import server from '../src/app';
 
-const agent = request.agent(app);
-jest.setTimeout(3000);
+const agent = request.agent(server);
 
 describe('GET /api/health', () => {
-  it('It should response have status 200', async () => {
+  it('should return 200 OK', async () => {
     await agent.get('/api/health').expect(200);
   });
 });
-
-new TestClient(agent).startTets();
-new TestEmployee(agent).startTets();

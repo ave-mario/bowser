@@ -1,79 +1,72 @@
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
 import { IClientFieldsToRegister, IClientToLogin } from '../src/interfaces';
 import request from 'supertest';
+import server from '../src/app';
 
-export class TestClient {
-  private _agent: request.SuperTest<request.Test>;
-  private _token: string;
+const agent = request.agent(server);
 
-  constructor(agent: request.SuperTest<request.Test>) {
-    this._agent = agent;
-  }
+let token = '';
+const newClient: IClientFieldsToRegister = {
+  name: 'Rosie',
+  surname: 'Langosh',
+  email: 'Rosie.Langosh@gmail.com',
+  phoneNumber: '+375336776452'
+};
 
-  public startTets() {
-    describe('The client path', () => {
-      this.testRegister();
-      this.testLogin();
-      this.testGetUSer();
+describe('Client routes', () => {
+  describe('POST /api/clients is registration', () => {
+    it('When this client already exist with email status 400', () => {
+      agent
+        .post('/api/clients/')
+        .send(newClient)
+        .expect(400);
     });
-  }
 
-  private testRegister(): void {
-    describe('POST /api/clients is registration', () => {
-      describe('if the fields is not valid', () => {
-        it('It should response have status 201', async () => {
-          const client: IClientFieldsToRegister = {
-            name: 'Rosie',
-            surname: 'Langosh',
-            email: 'Rosie.Langosh@gmail.com',
-            phoneNumber: '+375336776452'
-          };
-          await this._agent
-            .post('/api/clients/')
-            .send(client)
-            .expect(201);
-        });
-      });
+    it('When valid phone: status 400', () => {
+      const clietn = newClient;
+      clietn.phoneNumber = '+37525855';
+      agent
+        .post('/api/clients/')
+        .send(clietn)
+        .expect(400);
     });
-  }
 
-  private testLogin(): void {
-    describe('POST /api/clients/login', () => {
-      describe('if the phoneNumber is valid', () => {
-        it('It should response have status 200', async () => {
-          const client: IClientToLogin = {
-            phoneNumber: '+375336776452',
-            loginCode: '123456'
-          };
-          await this._agent
-            .post('/api/clients/login')
-            .send(client)
-            .expect(200)
-            .then(response => {
-              this._token = response.body.tokens.accessToken;
-            });
-        });
-      });
+    it('When not have client status 201', async () => {
+      await agent
+        .post('/api/clients/')
+        .send(newClient)
+        .expect(201);
     });
-  }
+  });
 
-  private testGetUSer(): void {
-    describe('GET /api/clients/current', () => {
-      describe('the token is', () => {
-        it('valid: It should response have status 401', async () => {
-          await this._agent
-            .get('/api/clients/current')
-            .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6I')
-            .expect(401);
+  describe('POST /api/clients/login', () => {
+    it('Better: When the phoneNumber and code is right than status 200', async () => {
+      const client: IClientToLogin = {
+        phoneNumber: newClient.phoneNumber,
+        loginCode: '123456'
+      };
+      await agent
+        .post('/api/clients/login')
+        .send(client)
+        .expect(200)
+        .then(response => {
+          token = response.body.tokens.accessToken;
         });
-        it('not valid: It should response have status 200', async () => {
-          await this._agent
-            .get('/api/clients/current')
-            .set('Content-Type', 'application/json')
-            .set('Authorization', 'Bearer ' + this._token)
-            .expect(200);
-        });
-      });
     });
-  }
-}
+  });
+
+  describe('GET /api/clients/current', () => {
+    it('Wrong: Whan the token is valid: status 401', async () => {
+      await agent
+        .get('/api/clients/current')
+        .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6I')
+        .expect(401);
+    });
+    it('Better: Token is not valid: status 200', async () => {
+      await agent
+        .get('/api/clients/current')
+        .set('Content-Type', 'application/json')
+        .set('Authorization', 'Bearer ' + token)
+        .expect(200);
+    });
+  });
+});
