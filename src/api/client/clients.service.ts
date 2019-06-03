@@ -1,3 +1,4 @@
+import faker from 'faker';
 import { Client } from '../../models';
 import {
   IClientFieldsToRegister,
@@ -23,7 +24,7 @@ class ClientService implements IUserService {
         surname: data.surname,
         email: data.email,
         phoneNumber: data.phoneNumber,
-        loginCode: '123456'
+        loginCode: faker.random.number({ min: 100000, max: 1000000 })
       });
       await newClient.save();
     } catch (error) {
@@ -59,7 +60,7 @@ class ClientService implements IUserService {
       const client = await Client.findOne({ phoneNumber });
       if (!client) return new Error(logicErr.notFoundUser);
       //add to send sms for client
-      client.loginCode = '123456';
+      client.loginCode = faker.random.number({ min: 100000, max: 1000000 });
       await client.save();
     } catch (error) {
       return new Error(technicalErr.databaseCrash);
