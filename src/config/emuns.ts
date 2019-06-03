@@ -10,6 +10,6 @@ export enum Roles {
 }
 
 export const Validate = {
-  phoneNumber: /\+375(29|33|44|25)\d{7}$/,
+  phoneNumber: /\+375\d{9}$/,
   password: /^[a-zA-Z0-9]{6,30}$/
 };

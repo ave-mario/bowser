@@ -8,7 +8,7 @@ export interface IClient extends Document {
   phoneNumber: string;
   address?: string;
   status: number;
-  loginCode?: string;
+  loginCode?: number;
   googleId?: string;
   vkontakteId?: string;
   created_at: string;
@@ -23,5 +23,5 @@ export interface IClientFieldsToRegister {
 
 export interface IClientToLogin {
   phoneNumber: string;
-  loginCode: string;
+  loginCode: number;
 }

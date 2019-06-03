@@ -42,5 +42,4 @@ export const validateRegisterEmplyoee = object().keys({
   address: string()
     .required()
     .min(10)
-    .max(50)
 });

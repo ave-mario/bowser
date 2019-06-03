@@ -31,9 +31,9 @@ const schema: Schema = new Schema(
       default: statusUsers.Active
     },
     loginCode: {
-      type: String,
-      min: 8,
-      max: 10
+      type: Number,
+      min: 100000,
+      max: 1000000
     },
     googleId: {
       type: String
