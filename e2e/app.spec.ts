@@ -4,7 +4,7 @@ import server from '../src/app';
 const agent = request.agent(server);
 
 describe('GET /api/health', () => {
-  it('should return 200 OK', async () => {
+  it('It should respond with a 200 status', async () => {
     await agent.get('/api/health').expect(200);
   });
 });
