@@ -1,5 +1,5 @@
 import { object, string, number } from 'joi';
-import { Validate } from '../config/emuns';
+import { Validate } from '../enums';
 
 export const loginClientSchema = object().keys({
   phoneNumber: string()

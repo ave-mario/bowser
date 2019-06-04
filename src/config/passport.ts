@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Roles } from './emuns';
+import { Roles } from '../enums';
 import { config } from './environment';
 import { Client, Employee } from '../models';
 import { IClient, IEmployee } from '../interfaces';
