@@ -1,6 +1,7 @@
 defaults: &defaults #working_directory: ./circleci
   docker:
     - image: circleci/node:10
+    - image: circleci/mongo:latest
 
 version: 2
 jobs:
