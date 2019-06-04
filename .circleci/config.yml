@@ -33,9 +33,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: 
-      name: Build Artefact
-      command: npm run build
+      - run:
+          name: Build Artefact
+          command: npm run build
       - persist_to_workspace:
           root: .
           paths:
@@ -81,6 +81,6 @@ workflows:
       # - unit:
       #     requires:
       #       - build
-      # - e2e:
-      #     requires:
-      #       - build
+      - e2e:
+          requires:
+            - lint
