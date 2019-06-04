@@ -81,6 +81,6 @@ workflows:
       # - unit:
       #     requires:
       #       - build
-      # - e2e:
-      #     requires:
-      #       - build
+      - e2e:
+          requires:
+            - lint
