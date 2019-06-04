@@ -19,7 +19,7 @@ describe('Employee routes', () => {
   console.log(newEmployee);
 
   describe('POST /api/employees is registration', () => {
-    it('when success create new employee:response have status 201', async () => {
+    it('when all data is correct then the employee is added', async () => {
       await agent
         .post('/api/employees')
         .send(newEmployee)
@@ -29,7 +29,7 @@ describe('Employee routes', () => {
       if (!user) throw "Don't save employee";
     });
 
-    it('when employee already exist with email response have status 400', async () => {
+    it('when email or phone is already registered then error add', async () => {
       await agent
         .post('/api/employees/')
         .send(newEmployee)
@@ -39,7 +39,7 @@ describe('Employee routes', () => {
         });
     });
 
-    it('when not have address: status 400', async () => {
+    it('when data not have address then error in validation', async () => {
       const employeeWithouAddress = newEmployee;
       delete employeeWithouAddress.address;
       await agent
@@ -54,25 +54,25 @@ describe('Employee routes', () => {
   });
 
   describe('POST /api/employees/login', () => {
-    it('when user is exist:  responsed tokens and user with status 200', async () => {
+    it('when employee with email is correct then the response have tokens and own user', async () => {
       const client: IEmployeeToLogin = {
         email: newEmployee.email,
-        password: '123456QWE'
+        password: '12345QWE'
       };
       const res = await agent
         .post('/api/employees/login')
         .send(client)
         .expect(200);
 
-      token = res.body.tokens.accessToken;
       expect(res.body).toHaveProperty('success', true);
       expect(res.body).toHaveProperty('tokens', { accessToken: expect.any(String) });
       expect(res.body).toHaveProperty('user', expect.any(Object));
+      token = res.body.tokens.accessToken;
     });
   });
 
   describe('GET /api/employees/current', () => {
-    it('better: Token is not valid: response should have user and tokens', async () => {
+    it('when token is valid then response return current user', async () => {
       await agent
         .get('/api/employees/current')
         .set('Authorization', 'Bearer ' + token)

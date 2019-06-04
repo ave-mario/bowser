@@ -17,7 +17,7 @@ describe('Client routes', () => {
   console.log(newClient);
 
   describe('POST /api/clients', () => {
-    it('When field of data wrong then status responsed error', async () => {
+    it("When email is wrong then service don't to add new client", async () => {
       const client = {
         name: newClient.name,
         surname: newClient.surname,
@@ -34,14 +34,14 @@ describe('Client routes', () => {
         });
     });
 
-    it('It should responed a success is true when all fields is right', async () => {
+    it('when all data is correct then the client is added success', async () => {
       await agent
         .post('/api/clients/')
         .send(newClient)
         .expect(201, { success: true });
     });
 
-    it('It should responed a success false and 400 status when user is exist', async () => {
+    it('when email or phone is already registered then get error', async () => {
       await agent
         .post('/api/clients/')
         .send(newClient)
@@ -54,7 +54,7 @@ describe('Client routes', () => {
   });
 
   describe('POST /api/clients/login', () => {
-    it('Better: When the phoneNumber and code responsed tokens and user with status 200', async () => {
+    it('when client with phone is exist then the response have tokens and own user', async () => {
       const user = await Client.findOne({ phoneNumber: newClient.phoneNumber })
         .select('loginCode')
         .exec();
@@ -79,13 +79,13 @@ describe('Client routes', () => {
   });
 
   describe('GET /api/clients/current', () => {
-    it('Wrong: Whan the token is valid: status 401', () => {
+    it('when token is wrong then response return status Forbidden', () => {
       agent
         .get('/api/clients/current')
         .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6I')
         .expect(401);
     });
-    it('Better: Token is not valid: status 200', () => {
+    it('when token is valid then response return current user', () => {
       agent
         .get('/api/clients/current')
         .set('Content-Type', 'application/json')
