@@ -5,5 +5,6 @@ export enum LogicErrCodes {
 }
 
 export enum TechnicalErrCodes {
-  DatabaseCrash = 500
+  DatabaseCrash = 500,
+  EmailServiceCrash = 500
 }

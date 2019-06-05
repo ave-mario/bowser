@@ -2,14 +2,10 @@ import { emailSend } from '../config';
 import { EmailMessages } from '../enums';
 
 export class EmailService {
-  public static sendCode(email: string, code: number, callback: () => void) {
+  public static sendCode(email: string, code: number) {
     const content = EmailMessages.code.content + code;
-    emailSend(email, content, EmailMessages.code.subject)
-      .then(() => {
-        callback();
-      })
-      .catch(err => {
-        throw new Error(err);
-      });
+    emailSend(email, content, EmailMessages.code.subject).catch(err => {
+      throw new Error(err);
+    });
   }
 }
