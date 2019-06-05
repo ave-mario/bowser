@@ -1,9 +1,8 @@
 import { Schema, Model, model, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IEmployee } from '../interfaces';
-import { Validate } from '../config/emuns';
+import { Validate, statusUsers } from '../enums';
 import { logicErr } from '../errors';
-import { statusUsers } from '../config/emuns';
 
 export interface IEmployeeModel extends IEmployee, Document {
   comparePassword(candidatePassword: string): Promise<Error | boolean>;
@@ -37,7 +36,8 @@ const schema: Schema = new Schema(
     phoneNumber: {
       type: String,
       trim: true,
-      required: true
+      required: true,
+      validate: Validate.phoneNumber
     },
     address: {
       type: String,

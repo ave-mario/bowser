@@ -1,6 +1,6 @@
 import { Schema, Model, model } from 'mongoose';
 import { IClient } from '../interfaces';
-import { statusUsers } from '../config/emuns';
+import { statusUsers, Validate } from '../enums';
 
 const schema: Schema = new Schema(
   {
@@ -20,7 +20,8 @@ const schema: Schema = new Schema(
     },
     phoneNumber: {
       type: String,
-      trim: true
+      trim: true,
+      validate: Validate.phoneNumber
     },
     address: {
       type: String
@@ -31,9 +32,9 @@ const schema: Schema = new Schema(
       default: statusUsers.Active
     },
     loginCode: {
-      type: String,
-      min: 8,
-      max: 10
+      type: Number,
+      min: 100000,
+      max: 1000000
     },
     googleId: {
       type: String

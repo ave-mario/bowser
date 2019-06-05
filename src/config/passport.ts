@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Roles } from './emuns';
+import { Roles } from '../enums';
 import { config } from './environment';
 import { Client, Employee } from '../models';
 import { IClient, IEmployee } from '../interfaces';
@@ -17,7 +17,7 @@ export class Passport {
         option,
         (
           token: any,
-          done: (error: Error | null, data: IEmployee | IClient | boolean) => void
+          done: (error: null, data: IEmployee | IClient | boolean) => void
         ) => {
           let userId: string = token.id;
           return Passport.getUser(token.role, userId).then(data => {
@@ -35,8 +35,8 @@ export class Passport {
   private static async getUser(
     role: string,
     userId: string
-  ): Promise<IClient | IEmployee> {
-    let user: IClient | IEmployee;
+  ): Promise<IClient | IEmployee | null> {
+    let user: IClient | IEmployee | null;
     if (role === Roles.Client) {
       user = await Client.findById(userId);
     } else {

@@ -1,5 +1,5 @@
 import { object, string } from 'joi';
-import { Validate } from '../config/emuns';
+import { Validate } from '../enums';
 
 export const validateRegisterClient = object().keys({
   phoneNumber: string()
@@ -42,5 +42,4 @@ export const validateRegisterEmplyoee = object().keys({
   address: string()
     .required()
     .min(10)
-    .max(50)
 });

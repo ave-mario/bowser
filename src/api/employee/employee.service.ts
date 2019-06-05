@@ -8,7 +8,8 @@ import {
   IUser
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
-import { JsonTokens, Roles } from '../../config';
+import { JsonTokens } from '../../config';
+import { Roles } from '../../enums';
 
 class EmployeeService implements IUserService {
   public async register(data: IEmployeeFieldsToRegister): Promise<Error> {

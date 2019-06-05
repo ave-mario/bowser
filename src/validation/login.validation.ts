@@ -1,14 +1,15 @@
-import { object, string } from 'joi';
-import { Validate } from '../config/emuns';
+import { object, string, number } from 'joi';
+import { Validate } from '../enums';
 
 export const loginClientSchema = object().keys({
   phoneNumber: string()
     .length(13)
     .required()
     .regex(Validate.phoneNumber),
-  loginCode: string()
+  loginCode: number()
     .required()
-    .length(6)
+    .min(100000)
+    .max(1000000)
 });
 
 export const loginEmployeeSchema = object().keys({

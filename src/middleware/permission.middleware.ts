@@ -11,7 +11,7 @@ export function permit(roles: string[] = []) {
     authenticateJwt(),
     (req: Request, res: Response, next: NextFunction) => {
       if (roles.length && !roles.includes(req.user.role)) {
-        return res.status(401).send({ message: logicErr.forbidden.msg, success: false });
+        return res.status(403).send({ message: logicErr.forbidden.msg, success: false });
       }
       next();
     }
