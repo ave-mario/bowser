@@ -9,7 +9,7 @@
     "lint:fix": "eslint ./src -c .eslintrc.js --fix --ext ts,tsx,json,js",
     "prettier": "prettier --write \"*.{js,jsx,ts,tsx,json}\"",
     "start": "nodemon ./src/server.ts",
-    "e2e": "cross-env NODE_ENV=test jest  --verbose",
+    "e2e": "cross-env NODE_ENV=test jest --forceExit --verbose",
     "e2e:watch": "jest --watch",
     "e2e:coverage": "npm run lint && npm run e2e --coverage --no-cache"
   },
@@ -73,13 +73,12 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "npm run e2e && lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
     "*.ts": [
-      "npm run e2e",
       "npm run prettier",
       "npm run lint:fix",
       "git add"
