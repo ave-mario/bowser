@@ -10,7 +10,8 @@ const schema = object({
   APP_PORT: number().required(),
   JWT_ENCRYPTION: string().required(),
   JWT_EXPIRATION: number().required(),
-  MONGODB_HOST: string().required()
+  MONGODB_HOST: string().required(),
+  EMAIL_SERVER_HOST: string().required()
 })
   .unknown()
   .required();
@@ -34,5 +35,8 @@ export const config = {
   jwt: {
     secret: envVars.JWT_ENCRYPTION,
     expiration: envVars.JWT_EXPIRATION
+  },
+  email: {
+    host: envVars.EMAIL_SERVER_HOST
   }
 };

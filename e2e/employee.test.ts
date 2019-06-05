@@ -16,7 +16,6 @@ describe('Employee routes', () => {
     phoneNumber: faker.phone.phoneNumber('+375#########'),
     address: `${faker.address.country()}, ${faker.address.city()}, ${faker.address.streetAddress()}`
   };
-  console.log(newEmployee);
 
   describe('POST /api/employees is registration', () => {
     it('when all data is correct then the employee is added', async () => {

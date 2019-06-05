@@ -53,6 +53,15 @@ describe('Client routes', () => {
     });
   });
 
+  describe('POST /api/clients/code', () => {
+    it('when client with phone is exist then set new login code', async () => {
+      await agent
+        .post('/api/clients/code')
+        .send({ phoneNumber: newClient.phoneNumber })
+        .expect(200, { success: true });
+    });
+  });
+
   describe('POST /api/clients/login', () => {
     it('when client with phone is exist then the response have tokens and own user', async () => {
       const user = await Client.findOne({ phoneNumber: newClient.phoneNumber })
@@ -64,7 +73,6 @@ describe('Client routes', () => {
           ? user.loginCode
           : faker.random.number({ min: 100000, max: 1000000 })
       };
-      console.log(client);
 
       const res = await agent
         .post('/api/clients/login')

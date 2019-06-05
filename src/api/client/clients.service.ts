@@ -12,6 +12,7 @@ import {
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
 import { Roles } from '../../enums';
+import { EmailService } from '../../utils';
 
 class ClientService implements IUserService {
   public async register(data: IClientFieldsToRegister): Promise<Error> {
@@ -56,13 +57,17 @@ class ClientService implements IUserService {
     }
   }
 
-  public async generateLoginCode(phoneNumber: string): Promise<Error | boolean> {
+  public async generateLoginCode(identify: string): Promise<Error | boolean> {
     try {
-      const client = await Client.findOne({ phoneNumber });
+      const client = await Client.findOne({
+        $or: [{ phoneNumber: identify }, { email: identify }]
+      });
       if (!client) return new Error(logicErr.notFoundUser);
-      //add to send sms for client
-      client.loginCode = faker.random.number({ min: 100000, max: 1000000 });
-      await client.save();
+      const code = faker.random.number({ min: 100000, max: 1000000 });
+      EmailService.sendCode(client.email, code, async () => {
+        client.loginCode = code;
+        await client.save();
+      });
     } catch (error) {
       return new Error(technicalErr.databaseCrash);
     }
