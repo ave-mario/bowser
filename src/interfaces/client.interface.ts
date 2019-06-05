@@ -8,6 +8,7 @@ export interface IClient extends Document {
   phoneNumber: string;
   address?: string;
   status: number;
+  attemptLogin: number;
   loginCode?: number;
   googleId?: string;
   vkontakteId?: string;

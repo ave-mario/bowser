@@ -36,6 +36,12 @@ const schema: Schema = new Schema(
       min: 100000,
       max: 1000000
     },
+    attemptLogin: {
+      type: Number,
+      default: 0,
+      required: true,
+      max: 5
+    },
     googleId: {
       type: String
     },

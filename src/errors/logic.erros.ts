@@ -15,5 +15,9 @@ export const logicErr = {
   },
   forbidden: {
     msg: 'Forbidden'
+  },
+  userBloking: {
+    code: 400,
+    msg: 'User bloked'
   }
 };
