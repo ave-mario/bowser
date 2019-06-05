@@ -62,7 +62,7 @@
     "jest": "^24.8.0",
     "lint-staged": "^8.1.7",
     "morgan": "^1.9.1",
-    "nodemon": "^1.19.0",
+    "nodemon": "^1.19.1",
     "prettier": "^1.17.1",
     "supertest": "^4.0.2",
     "ts-jest": "^24.0.2",
