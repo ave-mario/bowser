@@ -79,10 +79,10 @@ describe('Client routes', () => {
         .send(user)
         .expect(200);
 
-      token = res.body.tokens.accessToken;
       expect(res.body).toHaveProperty('success', true);
       expect(res.body).toHaveProperty('tokens', { accessToken: expect.any(String) });
       expect(res.body).toHaveProperty('user', expect.any(Object));
+      token = res.body.tokens.accessToken;
     });
 
     it('when the user entered incorrectly 4 entry codes then he is blocked', async () => {
@@ -106,8 +106,8 @@ describe('Client routes', () => {
 
       const client = await Client.findOne({ phoneNumber: newClient.phoneNumber });
 
-      if (client.attemptLogin !== 0 || client.status !== statusUsers.Bloking)
-        throw new Error(`Expecting blocking user`);
+      expect(client.attemptLogin).toBe(0);
+      expect(client.status).toBe(statusUsers.Bloking);
     });
   });
 
