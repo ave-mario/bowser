@@ -41,7 +41,9 @@ class ClientService implements IUserService {
     try {
       const client = await Client.findOne({
         phoneNumber: data.phoneNumber
-      });
+      })
+        .select('+loginCode')
+        .exec();
       if (!client) return new Error(logicErr.notFoundUser);
       if (client.status === statusUsers.Bloking) return new Error(logicErr.userBloking);
       try {
@@ -91,7 +93,9 @@ class ClientService implements IUserService {
     try {
       const client = await Client.findOne({
         $or: [{ phoneNumber: identify }, { email: identify }]
-      });
+      })
+        .select('+loginCode')
+        .exec();
       if (!client) return new Error(logicErr.notFoundUser);
       if (client.status === statusUsers.Bloking) return new Error(logicErr.userBloking);
       const code = faker.random.number({ min: 100000, max: 1000000 });
