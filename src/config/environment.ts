@@ -11,7 +11,8 @@ const schema = object({
   JWT_ENCRYPTION: string().required(),
   JWT_EXPIRATION: number().required(),
   MONGODB_HOST: string().required(),
-  EMAIL_SERVER_HOST: string().required()
+  EMAIL_SERVER_HOST: string().required(),
+  CLIENT_STUFF_LINK: string().required()
 })
   .unknown()
   .required();
@@ -38,5 +39,8 @@ export const config = {
   },
   email: {
     host: envVars.EMAIL_SERVER_HOST
+  },
+  clients: {
+    stuffLink: envVars.CLIENT_STUFF_LINK
   }
 };
