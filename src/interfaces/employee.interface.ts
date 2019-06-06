@@ -7,6 +7,7 @@ export interface IEmployee {
   phoneNumber: string;
   address: string;
   status: number;
+  identifiedToken?: string;
 }
 
 export interface IEmployeeFieldsToRegister {
