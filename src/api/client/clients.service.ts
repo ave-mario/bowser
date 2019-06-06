@@ -11,7 +11,7 @@ import {
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
-import { Roles, statusUsers } from '../../enums';
+import { Roles, statusUsers, CountAttempt } from '../../enums';
 import { EmailService } from '../../utils';
 
 class ClientService implements IUserService {
@@ -70,7 +70,7 @@ class ClientService implements IUserService {
   private async checkLoginCode(client: IClient, loginCode: number): Promise<void> {
     let error;
     if (client.loginCode !== loginCode) {
-      if (client.attemptLogin < 5) {
+      if (client.attemptLogin < CountAttempt.loginClient) {
         client.attemptLogin = client.attemptLogin + 1;
         error = logicErr.wrongCodeToLogin;
       } else {
@@ -93,6 +93,7 @@ class ClientService implements IUserService {
         $or: [{ phoneNumber: identify }, { email: identify }]
       });
       if (!client) return new Error(logicErr.notFoundUser);
+      if (client.status === statusUsers.Bloking) return new Error(logicErr.userBloking);
       const code = faker.random.number({ min: 100000, max: 1000000 });
       EmailService.sendCode(client.email, code);
       client.loginCode = code;
