@@ -10,9 +10,8 @@ import {
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
-import { Roles, statusUsers } from '../../enums';
+import { Roles, StatusUsers } from '../../enums';
 import { EmailService } from '../../utils';
-import { token } from 'morgan';
 
 class EmployeeService implements IUserService {
   public async register(data: IEmployeeFieldsToRegister): Promise<Error> {
@@ -48,7 +47,7 @@ class EmployeeService implements IUserService {
         .exec();
       if (!employee) return new Error(logicErr.notFoundUser);
 
-      if (employee.status === statusUsers.Bloking) return new Error(logicErr.userBloking);
+      if (employee.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
 
       let success = await employee.comparePassword(data.password);
       if (!success) return new Error(logicErr.notFoundUser);
@@ -90,7 +89,7 @@ class EmployeeService implements IUserService {
       });
       if (!employee) return new Error(logicErr.notFoundUser);
 
-      employee.status = statusUsers.Active;
+      employee.status = StatusUsers.Active;
       employee.password = data.newPassword;
       employee.identifiedToken = undefined;
       await employee.save();

@@ -1,4 +1,4 @@
-export const enum statusUsers {
+export const enum StatusUsers {
   NeedChangePassword = 1,
   Active = 2,
   Bloking = 3

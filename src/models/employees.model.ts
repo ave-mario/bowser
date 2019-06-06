@@ -1,7 +1,7 @@
 import { Schema, Model, model, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IEmployee } from '../interfaces';
-import { Validate, statusUsers } from '../enums';
+import { Validate, StatusUsers } from '../enums';
 import { logicErr } from '../errors';
 import { strict, string } from 'joi';
 
@@ -48,7 +48,7 @@ const schema: Schema = new Schema(
     status: {
       type: Number,
       required: true,
-      default: statusUsers.NeedChangePassword
+      default: StatusUsers.NeedChangePassword
     },
     identifiedToken: {
       type: String,
