@@ -11,7 +11,7 @@ import {
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
-import { Roles, statusUsers, CountAttempt } from '../../enums';
+import { Roles, StatusUsers, CountAttempt } from '../../enums';
 import { EmailService } from '../../utils';
 
 class ClientService implements IUserService {
@@ -45,7 +45,7 @@ class ClientService implements IUserService {
         .select('+loginCode')
         .exec();
       if (!client) return new Error(logicErr.notFoundUser);
-      if (client.status === statusUsers.Bloking) return new Error(logicErr.userBloking);
+      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
       try {
         await this.checkLoginCode(client, data.loginCode);
       } catch (err) {
@@ -77,7 +77,7 @@ class ClientService implements IUserService {
         error = logicErr.wrongCodeToLogin;
       } else {
         client.attemptLogin = 0;
-        client.status = statusUsers.Bloking;
+        client.status = StatusUsers.Bloking;
         client.loginCode = undefined;
         error = logicErr.userBloking;
       }
@@ -97,7 +97,7 @@ class ClientService implements IUserService {
         .select('+loginCode')
         .exec();
       if (!client) return new Error(logicErr.notFoundUser);
-      if (client.status === statusUsers.Bloking) return new Error(logicErr.userBloking);
+      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
       const code = faker.random.number({ min: 100000, max: 1000000 });
       EmailService.sendCode(client.email, code);
       client.loginCode = code;

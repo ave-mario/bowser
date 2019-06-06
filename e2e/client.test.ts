@@ -3,7 +3,7 @@ import faker from 'faker';
 import server from '../src/app';
 import { IClientFieldsToRegister, IClientToLogin } from '../src/interfaces';
 import { Client } from '../src/models';
-import { statusUsers, CountAttempt } from '../src/enums';
+import { StatusUsers, CountAttempt } from '../src/enums';
 import { logicErr } from '../src/errors';
 
 const agent = request.agent(server);
@@ -107,7 +107,7 @@ describe('Client routes', () => {
       const client = await Client.findOne({ phoneNumber: newClient.phoneNumber });
 
       expect(client.attemptLogin).toBe(0);
-      expect(client.status).toBe(statusUsers.Bloking);
+      expect(client.status).toBe(StatusUsers.Bloking);
     });
   });
 

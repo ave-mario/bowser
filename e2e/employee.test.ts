@@ -3,7 +3,7 @@ import faker from 'faker';
 import server from '../src/app';
 import { IEmployeeToLogin, IEmployeeFieldsToRegister } from '../src/interfaces';
 import { Employee } from '../src/models';
-import { statusUsers } from '../src/enums';
+import { StatusUsers } from '../src/enums';
 
 const agent = request.agent(server);
 
@@ -11,7 +11,6 @@ describe('Employee routes', () => {
   let token = '';
   let identifiedToken: string;
   const newPassword = faker.internet.password();
-  console.log(newPassword);
   const newEmployee: IEmployeeFieldsToRegister = {
     name: faker.name.firstName(),
     surname: faker.name.lastName(),
@@ -31,7 +30,7 @@ describe('Employee routes', () => {
       const user = await Employee.findOne({ email: newEmployee.email })
         .select('+identifiedToken')
         .exec();
-      expect(user.status).toBe(statusUsers.NeedChangePassword);
+      expect(user.status).toBe(StatusUsers.NeedChangePassword);
       identifiedToken = user.identifiedToken;
     });
 
@@ -76,7 +75,7 @@ describe('Employee routes', () => {
         .expect({ success: true });
 
       const user = await Employee.findOne({ email: newEmployee.email });
-      expect(user.status).toBe(statusUsers.Active);
+      expect(user.status).toBe(StatusUsers.Active);
     });
   });
 

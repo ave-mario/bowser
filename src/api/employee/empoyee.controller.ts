@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import EmployeeService from './employee.service';
 import { Error } from '../../interfaces';
-import { statusUsers } from 'src/enums';
+import { StatusUsers } from 'src/enums';
 
 class ClientController {
   public postRegister(req: Request, res: Response): void {
@@ -29,7 +29,7 @@ class ClientController {
   }
 
   public changePassword(req: Request, res: Response): void {
-    if (req.user.status === statusUsers.NeedChangePassword) {
+    if (req.user.status === StatusUsers.NeedChangePassword) {
       EmployeeService.changeFirsrtPassword(req.body, req.user._id).then(result =>
         !(result instanceof Error)
           ? res.status(200).json({ success: true })
