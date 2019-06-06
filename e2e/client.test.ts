@@ -3,6 +3,8 @@ import faker from 'faker';
 import server from '../src/app';
 import { IClientFieldsToRegister, IClientToLogin } from '../src/interfaces';
 import { Client } from '../src/models';
+import { statusUsers, CountAttempt } from '../src/enums';
+import { logicErr } from '../src/errors';
 
 const agent = request.agent(server);
 
@@ -14,7 +16,6 @@ describe('Client routes', () => {
     email: faker.internet.email(),
     phoneNumber: faker.phone.phoneNumber('+375#########')
   };
-  console.log(newClient);
 
   describe('POST /api/clients', () => {
     it("When email is wrong then service don't to add new client", async () => {
@@ -54,7 +55,7 @@ describe('Client routes', () => {
   });
 
   describe('POST /api/clients/code', () => {
-    it('when client with phone is exist then set new login code', async () => {
+    it('when send code after register & user with phone is exist then set new login code', async () => {
       await agent
         .post('/api/clients/code')
         .send({ phoneNumber: newClient.phoneNumber })
@@ -63,26 +64,59 @@ describe('Client routes', () => {
   });
 
   describe('POST /api/clients/login', () => {
+    const user: IClientToLogin = {
+      phoneNumber: newClient.phoneNumber,
+      loginCode: faker.random.number({ min: 100000, max: 1000000 })
+    };
+
     it('when client with phone is exist then the response have tokens and own user', async () => {
-      const user = await Client.findOne({ phoneNumber: newClient.phoneNumber })
+      const data = await Client.findOne({ phoneNumber: newClient.phoneNumber })
         .select('loginCode')
         .exec();
-      const client: IClientToLogin = {
-        phoneNumber: newClient.phoneNumber,
-        loginCode: user
-          ? user.loginCode
-          : faker.random.number({ min: 100000, max: 1000000 })
-      };
-
+      user.loginCode = data.loginCode;
       const res = await agent
         .post('/api/clients/login')
-        .send(client)
+        .send(user)
         .expect(200);
 
       token = res.body.tokens.accessToken;
       expect(res.body).toHaveProperty('success', true);
       expect(res.body).toHaveProperty('tokens', { accessToken: expect.any(String) });
       expect(res.body).toHaveProperty('user', expect.any(Object));
+    });
+
+    it('when the user entered incorrectly 4 entry codes then he is blocked', async () => {
+      let message = logicErr.wrongCodeToLogin.msg;
+
+      const attempts: number[] = Array.from(
+        { length: CountAttempt.loginClient + 1 },
+        (x, i) => i
+      );
+
+      for (let attempt of attempts) {
+        if (attempt === CountAttempt.loginClient) {
+          message = logicErr.userBloking.msg;
+        }
+
+        await agent
+          .post('/api/clients/login')
+          .send(user)
+          .expect(400, { success: false, message });
+      }
+
+      const client = await Client.findOne({ phoneNumber: newClient.phoneNumber });
+
+      if (client.attemptLogin !== 0 || client.status !== statusUsers.Bloking)
+        throw new Error(`Expecting blocking user`);
+    });
+  });
+
+  describe('POST /api/clients/code', () => {
+    it('when send code after bloking user then error send', async () => {
+      await agent
+        .post('/api/clients/code')
+        .send({ phoneNumber: newClient.phoneNumber })
+        .expect(400, { success: false, message: logicErr.userBloking.msg });
     });
   });
 
@@ -93,6 +127,7 @@ describe('Client routes', () => {
         .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6I')
         .expect(401);
     });
+
     it('when token is valid then response return current user', () => {
       agent
         .get('/api/clients/current')
