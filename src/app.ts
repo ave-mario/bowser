@@ -2,12 +2,15 @@ import express, { Response, Request, NextFunction } from 'express';
 import { initializeDb, Passport, initialize } from './config';
 import router from './routes';
 import logger from 'morgan';
+import Logger from 'js-logger';
+
 class App {
   public app: express.Application;
 
   public constructor() {
     this.app = express();
     this.app.use(logger('dev'));
+    Logger.useDefaults();
     this.configCors();
     this.config();
   }
