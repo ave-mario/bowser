@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import logger from 'js-logger';
 import { config } from './environment';
 
 const { app, mongo } = config;
@@ -15,15 +14,15 @@ export function initializeDb(callback: (mongo: any) => void): void {
   mongoose.set('useCreateIndex', true);
 
   mongoose.connection.on('connected', function(): void {
-    logger.info('Mongoose default connection open to ' + mongo.host);
+    console.log('Mongoose default connection open to ' + mongo.host);
   });
 
   mongoose.connection.on('error', function(err: Error): void {
-    logger.warn('Mongoose default connection error: ' + err);
+    console.log('Mongoose default connection error: ' + err);
   });
 
   mongoose.connection.on('disconnected', function(): void {
-    logger.warn('Mongoose default connection disconnected');
+    console.log('Mongoose default connection disconnected');
   });
 
   mongoose
@@ -33,5 +32,5 @@ export function initializeDb(callback: (mongo: any) => void): void {
         callback(mongoose);
       }
     )
-    .catch((err): void => logger.error(err.toString()));
+    .catch((err): void => console.error(err.toString()));
 }
