@@ -9,7 +9,7 @@ import { logicErr } from '../src/errors';
 const agent = request.agent(server);
 
 describe('Client routes', () => {
-  let token = '';
+  let accessToken: string, refreshToken: string;
   const newClient: IClientFieldsToRegister = {
     name: faker.name.firstName(),
     surname: faker.name.lastName(),
@@ -63,12 +63,11 @@ describe('Client routes', () => {
     });
   });
 
+  const user: IClientToLogin = {
+    phoneNumber: newClient.phoneNumber,
+    loginCode: faker.random.number({ min: 100000, max: 1000000 })
+  };
   describe('POST /api/clients/login', () => {
-    const user: IClientToLogin = {
-      phoneNumber: newClient.phoneNumber,
-      loginCode: faker.random.number({ min: 100000, max: 1000000 })
-    };
-
     it('when client with phone is exist then the response have tokens and own user', async () => {
       const data = await Client.findOne({ phoneNumber: newClient.phoneNumber })
         .select('loginCode')
@@ -80,11 +79,32 @@ describe('Client routes', () => {
         .expect(200);
 
       expect(res.body).toHaveProperty('success', true);
-      expect(res.body).toHaveProperty('tokens', { accessToken: expect.any(String) });
+      expect(res.body).toHaveProperty('tokens', {
+        accessToken: expect.any(String),
+        refreshToken: expect.any(String)
+      });
       expect(res.body).toHaveProperty('user', expect.any(Object));
-      token = res.body.tokens.accessToken;
+      accessToken = res.body.tokens.accessToken;
+      refreshToken = res.body.tokens.refreshToken;
     });
+  });
+  describe('POST /api/auth/refresh-tokens', () => {
+    it('when send refresh token valid then return new access and refresh tokens', async () => {
+      const res = await agent
+        .post('/api/auth/refresh-tokens')
+        .set('Authorization', 'Bearer ' + refreshToken)
+        .expect(200);
 
+      expect(res.body).toHaveProperty('success', true);
+      expect(res.body).toHaveProperty('tokens', {
+        accessToken: expect.any(String),
+        refreshToken: expect.any(String)
+      });
+      accessToken = res.body.tokens.accessToken;
+      refreshToken = res.body.tokens.refreshToken;
+    });
+  });
+  describe('POST /api/clients/login', () => {
     it('when the user entered incorrectly 4 entry codes then he is blocked', async () => {
       let message = logicErr.wrongCodeToLogin.msg;
 
@@ -124,7 +144,7 @@ describe('Client routes', () => {
     it('when token is wrong then response return status Forbidden', () => {
       agent
         .get('/api/clients/current')
-        .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6I')
+        .set('Authorization', 'Bearer ' + faker.hacker.abbreviation())
         .expect(401);
     });
 
@@ -132,7 +152,7 @@ describe('Client routes', () => {
       agent
         .get('/api/clients/current')
         .set('Content-Type', 'application/json')
-        .set('Authorization', 'Bearer ' + token)
+        .set('Authorization', 'Bearer ' + accessToken)
         .expect(200)
         .expect(res => {
           expect(res.body).toHaveProperty('success', true);

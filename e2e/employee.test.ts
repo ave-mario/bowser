@@ -4,6 +4,7 @@ import server from '../src/app';
 import { IEmployeeToLogin, IEmployeeFieldsToRegister } from '../src/interfaces';
 import { Employee } from '../src/models';
 import { StatusUsers } from '../src/enums';
+import { logicErr } from '../src/errors';
 
 const agent = request.agent(server);
 
@@ -39,7 +40,7 @@ describe('Employee routes', () => {
         .post('/api/employees/')
         .send(newEmployee)
         .expect(400, {
-          message: 'User is already registered',
+          message: logicErr.userIsAlreadyRegistered.msg,
           success: false
         });
     });
@@ -72,7 +73,7 @@ describe('Employee routes', () => {
         .put('/api/employees/password')
         .set('Authorization', 'Bearer ' + identifiedToken)
         .send({ newPassword, token: identifiedToken })
-        .expect({ success: true });
+        .expect(200, { success: true });
 
       const user = await Employee.findOne({ email: newEmployee.email });
       expect(user.status).toBe(StatusUsers.Active);
@@ -91,7 +92,10 @@ describe('Employee routes', () => {
         .expect(200);
 
       expect(res.body).toHaveProperty('success', true);
-      expect(res.body).toHaveProperty('tokens', { accessToken: expect.any(String) });
+      expect(res.body).toHaveProperty('tokens', {
+        accessToken: expect.any(String),
+        refreshToken: expect.any(String)
+      });
       expect(res.body).toHaveProperty('user', expect.any(Object));
       token = res.body.tokens.accessToken;
     });
