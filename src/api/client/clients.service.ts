@@ -7,7 +7,8 @@ import {
   Error,
   IClient,
   IUserService,
-  IUser
+  IUser,
+  ITokens
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
@@ -53,19 +54,15 @@ class ClientService implements IUserService {
       }
 
       const clientObj = client.toObject();
-      const accessToken: string = JsonTokens.generateAccessToken(
-        clientObj._id,
-        Roles.Client
-      );
+      const tokens: ITokens = JsonTokens.generationTokens(clientObj._id, Roles.Client);
 
       return {
         user: clientObj,
-        tokens: {
-          accessToken
-        }
+        tokens
       };
-    } catch {
-      return new Error(technicalErr.databaseCrash);
+    } catch (err) {
+      throw err;
+      // return new Error(technicalErr.databaseCrash);
     }
   }
 

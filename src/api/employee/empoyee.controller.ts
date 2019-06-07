@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import EmployeeService from './employee.service';
 import { Error } from '../../interfaces';
-import { StatusUsers } from 'src/enums';
+import { StatusUsers } from '../../enums';
 
 class ClientController {
   public postRegister(req: Request, res: Response): void {

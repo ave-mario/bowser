@@ -5,3 +5,5 @@ export * from './error.interface';
 export * from './room.interface';
 export * from './services';
 export * from './user.interface';
+export * from './token.interface';
+export * from './implementation';

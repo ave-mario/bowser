@@ -6,7 +6,8 @@ import {
   IUserResponseLogin,
   IEmployeeToLogin,
   IUserService,
-  IUser
+  IUser,
+  ITokens
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
@@ -30,7 +31,10 @@ class EmployeeService implements IUserService {
         phoneNumber: data.phoneNumber,
         password: faker.internet.password()
       });
-      const token: string = JsonTokens.generateIdentifiedToken(newEmployee._id);
+      const token: string = JsonTokens.generateIdentifiedToken(
+        newEmployee._id,
+        Roles.Employee
+      );
       newEmployee.identifiedToken = token;
 
       EmailService.sendLinkToChangePassword(newEmployee.email, token, newEmployee.name);
@@ -53,15 +57,10 @@ class EmployeeService implements IUserService {
       if (!success) return new Error(logicErr.notFoundUser);
 
       const clientObj = employee.toObject();
-      const accessToken: string = JsonTokens.generateAccessToken(
-        clientObj._id,
-        Roles.Employee
-      );
+      const tokens: ITokens = JsonTokens.generationTokens(clientObj._id, Roles.Employee);
       return {
         user: clientObj,
-        tokens: {
-          accessToken
-        }
+        tokens
       };
     } catch {
       return new Error(technicalErr.databaseCrash);

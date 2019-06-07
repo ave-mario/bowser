@@ -2,7 +2,7 @@ import passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Roles } from '../enums';
 import { config } from './environment';
-import { Client, Employee } from '../models';
+import { Client, Employee, Token } from '../models';
 import { IClient, IEmployee } from '../interfaces';
 
 export class Passport {
@@ -13,18 +13,42 @@ export class Passport {
     };
 
     passport.use(
+      'resresh-jwt',
+      new Strategy(
+        option,
+        async (
+          token: any,
+          done: (error: any, user?: IEmployee | IClient, info?: string) => void
+        ) => {
+          let userId;
+          const tokenRefresh = await Token.findOne({ tokenId: token.id });
+          if (!tokenRefresh) {
+            return done(null);
+          }
+          userId = tokenRefresh.userId;
+          return Passport.getUser(tokenRefresh.role, userId).then(user => {
+            if (user) {
+              return done(null, user, token.role);
+            } else {
+            }
+          });
+        }
+      )
+    );
+
+    passport.use(
       new Strategy(
         option,
         (
           token: any,
-          done: (error: null, data: IEmployee | IClient | boolean) => void
+          done: (error: any, user?: IEmployee | IClient, info?: string) => void
         ) => {
           let userId: string = token.id;
-          return Passport.getUser(token.role, userId).then(data => {
-            if (data) {
-              return done(null, data);
+          return Passport.getUser(token.role, userId).then(user => {
+            if (user) {
+              return done(null, user, token.role);
             } else {
-              return done(null, false);
+              return done(null);
             }
           });
         }
@@ -48,3 +72,5 @@ export class Passport {
 
 export const initialize = () => passport.initialize();
 export const authenticateJwt = () => passport.authenticate('jwt', { session: false });
+export const authenticateRefreshJwt = () =>
+  passport.authenticate('resresh-jwt', { session: false });

@@ -9,7 +9,7 @@
     "outDir": "dist",
     "pretty": true,
     "types": ["jest", "node"],
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "removeComments": true,
     "typeRoots": ["node_modules/@types"],
     "emitDecoratorMetadata": true,
