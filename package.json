@@ -76,6 +76,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "npm run e2e && lint-staged",
+      "pre-push": "npm run e2e",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
