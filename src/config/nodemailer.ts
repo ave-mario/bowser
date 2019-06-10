@@ -7,14 +7,13 @@ export async function emailSend(
   subject: string
 ): Promise<void | boolean> {
   if (config.app.environment !== 'test') {
-    let testAccount = await nodemailer.createTestAccount();
-
     let transporter = nodemailer.createTransport({
       host: config.email.host,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: {
-        user: testAccount.user,
-        pass: testAccount.pass
+        user: config.email.user,
+        pass: config.email.pass
       }
     });
 
