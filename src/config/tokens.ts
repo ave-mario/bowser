@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import { config } from './environment';
 import { ITokens, SaveRefreshTokens, SaveTokenToMongoDB } from '../interfaces';
-import { IEmployeeModel } from 'models';
+import { IEmployeeModel } from '../models';
 
 class Tokens {
   private _refreshToDB: SaveRefreshTokens;
@@ -21,18 +21,18 @@ class Tokens {
   }
 
   public generateIdentifiedToken(user: IEmployeeModel, role: string): any {
-    const token = this.generate(user._id, config.jwt.identified.expiration, role);
+    const token = this.generate(user._id, config.jwt.identifiedExpiration, role);
     this._refreshToDB.saveIdentified(token, user);
 
     return token;
   }
 
   private generateAccessToken(_id: string, role: string): any {
-    return this.generate(_id, config.jwt.access.expiration, role);
+    return this.generate(_id, config.jwt.accessExpiration, role);
   }
 
   private generateRefreshToken(_id: string, role: string): string {
-    return this.generate(_id, config.jwt.refresh.expiration, role);
+    return this.generate(_id, config.jwt.refreshExpiration, role);
   }
 
   private generate(id: string, expiresIn: string | number, role: string): string {

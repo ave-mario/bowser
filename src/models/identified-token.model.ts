@@ -9,7 +9,13 @@ var schema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'Employees',
-    required: true
+    required: true,
+    unique: true
+  },
+  createdAt: {
+    type: Date,
+    expires: '8h',
+    default: Date.now
   }
 });
 

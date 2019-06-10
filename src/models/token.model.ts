@@ -19,6 +19,13 @@ var schema = new Schema({
     type: Boolean,
     required: true,
     default: true
+  },
+  createdAt: {
+    type: Date,
+    index: {
+      expires: '12h'
+    },
+    default: Date.now
   }
 });
 
