@@ -22,7 +22,6 @@ export const schemaTest = object({
   NODE_ENV: string()
     .valid('development', 'test', 'production')
     .required(),
-  APP_PORT: number().required(),
   JWT_ENCRYPTION: string().required(),
   JWT_ACCESS_EXPIRATION: string().required(),
   JWT_REFRESH_EXPIRATION: string().required(),

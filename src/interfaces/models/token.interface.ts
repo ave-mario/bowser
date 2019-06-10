@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { IEmployeeModel } from '../models';
+import { IEmployeeModel } from '../../models';
 
 export interface ITokenModel extends Document {
   _id: string;

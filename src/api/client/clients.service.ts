@@ -8,14 +8,17 @@ import {
   IClient,
   IUserService,
   IUser,
-  ITokens
+  ITokens,
+  EmailService
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
 import { Roles, StatusUsers, CountAttempt } from '../../enums';
-import { EmailService } from '../../utils';
+import { Transport } from '../../utils';
 
 class ClientService implements IUserService {
+  private _transporter: Transport = new Transport(new EmailService());
+
   public async register(data: IClientFieldsToRegister): Promise<Error> {
     try {
       const client = await Client.findOne({
@@ -30,7 +33,7 @@ class ClientService implements IUserService {
         phoneNumber: data.phoneNumber,
         loginCode
       });
-      EmailService.sendCode(newClient.email, loginCode);
+      this._transporter.sendCode(newClient.email, loginCode);
       await newClient.save();
     } catch (error) {
       if (error.code === logicErr.wrongCodeToLogin.code) return error;
@@ -95,7 +98,7 @@ class ClientService implements IUserService {
       if (!client) return new Error(logicErr.notFoundUser);
       if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
       const code = faker.random.number({ min: 100000, max: 1000000 });
-      EmailService.sendCode(client.email, code);
+      this._transporter.sendCode(client.email, code);
       client.loginCode = code;
       await client.save();
     } catch (error) {

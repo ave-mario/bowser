@@ -7,14 +7,17 @@ import {
   IEmployeeToLogin,
   IUserService,
   IUser,
-  ITokens
+  ITokens,
+  EmailService
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
 import { Roles, StatusUsers } from '../../enums';
-import { EmailService } from '../../utils';
+import { Transport } from '../../utils';
 
 class EmployeeService implements IUserService {
+  private _transporter: Transport = new Transport(new EmailService());
+
   public async register(data: IEmployeeFieldsToRegister): Promise<Error> {
     try {
       const employee = await Employee.findOne({
@@ -37,7 +40,11 @@ class EmployeeService implements IUserService {
         Roles.Employee
       );
 
-      EmailService.sendLinkToChangePassword(newEmployee.email, token, newEmployee.name);
+      this._transporter.sendLinkToChangePassword(
+        newEmployee.email,
+        token,
+        newEmployee.name
+      );
       await newEmployee.save();
     } catch (error) {
       return new Error(technicalErr.databaseCrash);

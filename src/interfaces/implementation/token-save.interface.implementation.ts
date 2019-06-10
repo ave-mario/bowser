@@ -1,4 +1,4 @@
-import { SaveRefreshTokens } from '../token.interface';
+import { SaveRefreshTokens } from '../models';
 import { Token, IEmployeeModel, IdentifiedToken } from '../../models';
 
 export class SaveTokenToMongoDB implements SaveRefreshTokens {
