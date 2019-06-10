@@ -33,7 +33,7 @@ class EmployeeService implements IUserService {
       const token: string = JsonTokens.generateIdentifiedToken(newEmployee._id);
       newEmployee.identifiedToken = token;
 
-      EmailService.sendLinkToChangePassword(newEmployee.email, token);
+      EmailService.sendLinkToChangePassword(newEmployee.email, token, newEmployee.name);
       await newEmployee.save();
     } catch (error) {
       return new Error(technicalErr.databaseCrash);
