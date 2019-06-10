@@ -1,5 +1,6 @@
 export enum LogicErrCodes {
   UserIsAlreadyRegistered = 400,
+  IncorrectDataToLogin = 400,
   NotFoundUser = 400,
   WrongCodeToLogin = 400
 }

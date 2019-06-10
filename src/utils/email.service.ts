@@ -8,7 +8,7 @@ export class EmailService {
   }
 
   public static sendLinkToChangePassword(email: string, token: string, name: string) {
-    const link = config.clients.stuffLink + `?token=${token}&name=${name}`;
+    const link = config.clients.stuffLink + `?toke    token}&name=${name}`;
     const content = EmailMessages.linkChangePasswrod.content + link;
     emailSend(email, content, EmailMessages.linkChangePasswrod.subject);
   }

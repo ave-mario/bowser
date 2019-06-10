@@ -5,9 +5,13 @@ export const logicErr = {
     code: LogicErrCodes.UserIsAlreadyRegistered,
     msg: 'User is already registered'
   },
+  incorrectDataToLogin: {
+    code: LogicErrCodes.IncorrectDataToLogin,
+    msg: 'Email or password incorrecrt'
+  },
   notFoundUser: {
     code: LogicErrCodes.NotFoundUser,
-    msg: 'Can not found user'
+    msg: 'Not found user'
   },
   wrongCodeToLogin: {
     code: LogicErrCodes.WrongCodeToLogin,
@@ -18,7 +22,7 @@ export const logicErr = {
   },
   userBloking: {
     code: 400,
-    msg: 'User is bloked'
+    msg: 'User is blocked'
   },
   wrongOldPassword: {
     code: 400,

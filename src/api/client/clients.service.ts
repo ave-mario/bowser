@@ -62,7 +62,6 @@ class ClientService implements IUserService {
       };
     } catch (err) {
       throw err;
-      // return new Error(technicalErr.databaseCrash);
     }
   }
 

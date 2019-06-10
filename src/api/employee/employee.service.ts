@@ -49,12 +49,12 @@ class EmployeeService implements IUserService {
       const employee = await Employee.findOne({ email: data.email })
         .select('+password')
         .exec();
-      if (!employee) return new Error(logicErr.notFoundUser);
+      if (!employee) return new Error(logicErr.incorrectDataToLogin);
 
       if (employee.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
 
       let success = await employee.comparePassword(data.password);
-      if (!success) return new Error(logicErr.notFoundUser);
+      if (!success) return new Error(logicErr.incorrectDataToLogin);
 
       const clientObj = employee.toObject();
       const tokens: ITokens = JsonTokens.generationTokens(clientObj._id, Roles.Employee);
