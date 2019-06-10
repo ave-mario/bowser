@@ -1,3 +1,4 @@
+import faker from 'faker';
 import { Employee, IEmployeeModel } from '../../models';
 import {
   IEmployeeFieldsToRegister,
@@ -9,12 +10,15 @@ import {
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
-import { Roles } from '../../enums';
+import { Roles, StatusUsers } from '../../enums';
+import { EmailService } from '../../utils';
 
 class EmployeeService implements IUserService {
   public async register(data: IEmployeeFieldsToRegister): Promise<Error> {
     try {
-      const employee = await Employee.findOne({ email: data.email });
+      const employee = await Employee.findOne({
+        $or: [{ email: data.email }, { phoneNumber: data.phoneNumber }]
+      });
       if (employee) return new Error(logicErr.userIsAlreadyRegistered);
 
       const newEmployee = new Employee({
@@ -24,9 +28,12 @@ class EmployeeService implements IUserService {
         email: data.email,
         address: data.address,
         phoneNumber: data.phoneNumber,
-        password: '12345QWE'
+        password: faker.internet.password()
       });
+      const token: string = JsonTokens.generateIdentifiedToken(newEmployee._id);
+      newEmployee.identifiedToken = token;
 
+      EmailService.sendLinkToChangePassword(newEmployee.email, token, newEmployee.name);
       await newEmployee.save();
     } catch (error) {
       return new Error(technicalErr.databaseCrash);
@@ -39,6 +46,9 @@ class EmployeeService implements IUserService {
         .select('+password')
         .exec();
       if (!employee) return new Error(logicErr.notFoundUser);
+
+      if (employee.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
+
       let success = await employee.comparePassword(data.password);
       if (!success) return new Error(logicErr.notFoundUser);
 
@@ -64,6 +74,28 @@ class EmployeeService implements IUserService {
       const dataObj = data.toObject();
       return dataObj;
     } catch (error) {
+      return new Error(technicalErr.databaseCrash);
+    }
+  }
+
+  public async changeFirsrtPassword(
+    data: { newPassword: string; token: string },
+    employeeId: IEmployeeModel
+  ): Promise<Error | boolean> {
+    try {
+      const employee = await Employee.findOne({
+        _id: employeeId,
+        identifiedToken: data.token
+      });
+      if (!employee) return new Error(logicErr.notFoundUser);
+
+      employee.status = StatusUsers.Active;
+      employee.password = data.newPassword;
+      employee.identifiedToken = undefined;
+      await employee.save();
+
+      return true;
+    } catch {
       return new Error(technicalErr.databaseCrash);
     }
   }

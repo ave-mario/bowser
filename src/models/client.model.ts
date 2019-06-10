@@ -1,6 +1,6 @@
 import { Schema, Model, model } from 'mongoose';
 import { IClient } from '../interfaces';
-import { statusUsers, Validate } from '../enums';
+import { StatusUsers, Validate, CountAttempt } from '../enums';
 
 const schema: Schema = new Schema(
   {
@@ -29,12 +29,19 @@ const schema: Schema = new Schema(
     status: {
       type: Number,
       required: true,
-      default: statusUsers.Active
+      default: StatusUsers.Active
     },
     loginCode: {
       type: Number,
       min: 100000,
-      max: 1000000
+      max: 1000000,
+      select: false
+    },
+    attemptLogin: {
+      type: Number,
+      default: 0,
+      required: true,
+      max: CountAttempt.loginClient
     },
     googleId: {
       type: String

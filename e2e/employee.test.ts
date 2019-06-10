@@ -3,11 +3,14 @@ import faker from 'faker';
 import server from '../src/app';
 import { IEmployeeToLogin, IEmployeeFieldsToRegister } from '../src/interfaces';
 import { Employee } from '../src/models';
+import { StatusUsers } from '../src/enums';
 
 const agent = request.agent(server);
 
 describe('Employee routes', () => {
   let token = '';
+  let identifiedToken: string;
+  const newPassword = faker.internet.password();
   const newEmployee: IEmployeeFieldsToRegister = {
     name: faker.name.firstName(),
     surname: faker.name.lastName(),
@@ -16,17 +19,19 @@ describe('Employee routes', () => {
     phoneNumber: faker.phone.phoneNumber('+375#########'),
     address: `${faker.address.country()}, ${faker.address.city()}, ${faker.address.streetAddress()}`
   };
-  console.log(newEmployee);
 
-  describe('POST /api/employees is registration', () => {
+  describe('POST /api/employees is add new', () => {
     it('when all data is correct then the employee is added', async () => {
       await agent
         .post('/api/employees')
         .send(newEmployee)
         .expect(201);
 
-      const user = await Employee.findOne({ email: newEmployee.email });
-      if (!user) throw "Don't save employee";
+      const user = await Employee.findOne({ email: newEmployee.email })
+        .select('+identifiedToken')
+        .exec();
+      expect(user.status).toBe(StatusUsers.NeedChangePassword);
+      identifiedToken = user.identifiedToken;
     });
 
     it('when email or phone is already registered then error add', async () => {
@@ -53,11 +58,32 @@ describe('Employee routes', () => {
     });
   });
 
+  describe('PUT /api/employees/password first change', () => {
+    it('when new password not valid then return error', () => {
+      agent
+        .put('/api/employees/password')
+        .set('Authorization', 'Bearer ' + identifiedToken)
+        .send({ newPassword: '123', token: identifiedToken })
+        .expect(400);
+    });
+
+    it('when new password is valid then success change password and status user', async () => {
+      await agent
+        .put('/api/employees/password')
+        .set('Authorization', 'Bearer ' + identifiedToken)
+        .send({ newPassword, token: identifiedToken })
+        .expect({ success: true });
+
+      const user = await Employee.findOne({ email: newEmployee.email });
+      expect(user.status).toBe(StatusUsers.Active);
+    });
+  });
+
   describe('POST /api/employees/login', () => {
     it('when employee with email is correct then the response have tokens and own user', async () => {
       const client: IEmployeeToLogin = {
         email: newEmployee.email,
-        password: '12345QWE'
+        password: newPassword
       };
       const res = await agent
         .post('/api/employees/login')

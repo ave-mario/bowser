@@ -20,3 +20,10 @@ export const loginEmployeeSchema = object().keys({
     .regex(Validate.password)
     .required()
 });
+
+export const changePassword = object().keys({
+  newPassword: string()
+    .regex(Validate.password)
+    .required(),
+  token: string().required()
+});

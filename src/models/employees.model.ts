@@ -1,8 +1,9 @@
 import { Schema, Model, model, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IEmployee } from '../interfaces';
-import { Validate, statusUsers } from '../enums';
+import { Validate, StatusUsers } from '../enums';
 import { logicErr } from '../errors';
+import { strict, string } from 'joi';
 
 export interface IEmployeeModel extends IEmployee, Document {
   comparePassword(candidatePassword: string): Promise<Error | boolean>;
@@ -31,6 +32,7 @@ const schema: Schema = new Schema(
     password: {
       type: String,
       required: true,
+      select: false,
       validate: Validate.password
     },
     phoneNumber: {
@@ -46,7 +48,11 @@ const schema: Schema = new Schema(
     status: {
       type: Number,
       required: true,
-      default: statusUsers.ChangePassword
+      default: StatusUsers.NeedChangePassword
+    },
+    identifiedToken: {
+      type: String,
+      select: false
     }
   },
   {
@@ -88,6 +94,7 @@ schema.set('toObject', {
   transform: function(doc: {}, ret: any): void {
     delete ret.__v;
     delete ret.password;
+    delete ret.identifiedToken;
   }
 });
 
