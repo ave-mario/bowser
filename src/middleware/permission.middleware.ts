@@ -1,4 +1,8 @@
-import { authenticateJwt, authenticateRefreshJwt } from '../config';
+import {
+  authenticateJwt,
+  authenticateRefreshJwt,
+  authenticateidentifiedToken
+} from '../config';
 import { logicErr } from '../errors';
 import { Response, Request, NextFunction } from 'express';
 
@@ -20,4 +24,8 @@ export function permit(roles: string[] = []) {
 
 export function authRefresh() {
   return authenticateRefreshJwt();
+}
+
+export function checkIdentified() {
+  return authenticateidentifiedToken();
 }

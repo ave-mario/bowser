@@ -1,5 +1,5 @@
 import faker from 'faker';
-import { Employee, IEmployeeModel } from '../../models';
+import { Employee, IEmployeeModel, IdentifiedToken } from '../../models';
 import {
   IEmployeeFieldsToRegister,
   Error,
@@ -31,11 +31,11 @@ class EmployeeService implements IUserService {
         phoneNumber: data.phoneNumber,
         password: faker.internet.password()
       });
+
       const token: string = JsonTokens.generateIdentifiedToken(
-        newEmployee._id,
+        newEmployee,
         Roles.Employee
       );
-      newEmployee.identifiedToken = token;
 
       EmailService.sendLinkToChangePassword(newEmployee.email, token, newEmployee.name);
       await newEmployee.save();
@@ -78,20 +78,18 @@ class EmployeeService implements IUserService {
   }
 
   public async changeFirsrtPassword(
-    data: { newPassword: string; token: string },
-    employeeId: IEmployeeModel
+    data: { newPassword: string },
+    employee: IEmployeeModel
   ): Promise<Error | boolean> {
     try {
-      const employee = await Employee.findOne({
-        _id: employeeId,
-        identifiedToken: data.token
-      });
       if (!employee) return new Error(logicErr.notFoundUser);
 
       employee.status = StatusUsers.Active;
       employee.password = data.newPassword;
       employee.identifiedToken = undefined;
       await employee.save();
+
+      await IdentifiedToken.remove({ userId: employee._id });
 
       return true;
     } catch {

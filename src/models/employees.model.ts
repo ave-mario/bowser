@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import { IEmployee } from '../interfaces';
 import { Validate, StatusUsers } from '../enums';
 import { logicErr } from '../errors';
-import { strict, string } from 'joi';
 
 export interface IEmployeeModel extends IEmployee, Document {
   comparePassword(candidatePassword: string): Promise<Error | boolean>;
@@ -49,10 +48,6 @@ const schema: Schema = new Schema(
       type: Number,
       required: true,
       default: StatusUsers.NeedChangePassword
-    },
-    identifiedToken: {
-      type: String,
-      select: false
     }
   },
   {

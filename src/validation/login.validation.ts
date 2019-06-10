@@ -24,6 +24,5 @@ export const loginEmployeeSchema = object().keys({
 export const changePassword = object().keys({
   newPassword: string()
     .regex(Validate.password)
-    .required(),
-  token: string().required()
+    .required()
 });

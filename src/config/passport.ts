@@ -2,7 +2,7 @@ import passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { Roles } from '../enums';
 import { config } from './environment';
-import { Client, Employee, Token } from '../models';
+import { Client, Employee, Token, IdentifiedToken } from '../models';
 import { IClient, IEmployee } from '../interfaces';
 
 export class Passport {
@@ -32,6 +32,25 @@ export class Passport {
             } else {
             }
           });
+        }
+      )
+    );
+
+    passport.use(
+      'identified-jwt',
+      new Strategy(
+        option,
+        async (token: any, done: (error: any, user?: IEmployee | boolean) => void) => {
+          const identified = await IdentifiedToken.findOne({ userId: token.id });
+          let user = null;
+          if (identified) {
+            user = await Employee.findById(identified.userId);
+          }
+          if (user) {
+            return done(null, user);
+          } else {
+            return done(null);
+          }
         }
       )
     );
@@ -74,3 +93,5 @@ export const initialize = () => passport.initialize();
 export const authenticateJwt = () => passport.authenticate('jwt', { session: false });
 export const authenticateRefreshJwt = () =>
   passport.authenticate('resresh-jwt', { session: false });
+export const authenticateidentifiedToken = () =>
+  passport.authenticate('identified-jwt', { session: false });

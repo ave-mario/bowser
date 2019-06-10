@@ -2,7 +2,7 @@ import request from 'supertest';
 import faker from 'faker';
 import server from '../src/app';
 import { IEmployeeToLogin, IEmployeeFieldsToRegister } from '../src/interfaces';
-import { Employee } from '../src/models';
+import { Employee, IdentifiedToken } from '../src/models';
 import { StatusUsers } from '../src/enums';
 import { logicErr } from '../src/errors';
 
@@ -32,7 +32,10 @@ describe('Employee routes', () => {
         .select('+identifiedToken')
         .exec();
       expect(user.status).toBe(StatusUsers.NeedChangePassword);
-      identifiedToken = user.identifiedToken;
+
+      identifiedToken = await IdentifiedToken.findOne({ userId: user._id }).then(
+        ({ token }) => token
+      );
     });
 
     it('when email or phone is already registered then error add', async () => {
@@ -60,19 +63,19 @@ describe('Employee routes', () => {
   });
 
   describe('PUT /api/employees/password first change', () => {
-    it('when new password not valid then return error', () => {
+    it('when token is valid and new password not valid then return error', () => {
       agent
         .put('/api/employees/password')
         .set('Authorization', 'Bearer ' + identifiedToken)
-        .send({ newPassword: '123', token: identifiedToken })
+        .send({ newPassword: '123' })
         .expect(400);
     });
 
-    it('when new password is valid then success change password and status user', async () => {
+    it('when token and new password is valid then success change password and status user', async () => {
       await agent
         .put('/api/employees/password')
         .set('Authorization', 'Bearer ' + identifiedToken)
-        .send({ newPassword, token: identifiedToken })
+        .send({ newPassword })
         .expect(200, { success: true });
 
       const user = await Employee.findOne({ email: newEmployee.email });

@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import { IEmployeeModel } from '../models';
 
 export interface ITokenModel extends Document {
   _id: string;
@@ -8,6 +9,12 @@ export interface ITokenModel extends Document {
   isValid: boolean;
 }
 
+export interface ITokenIdenfied extends Document {
+  _id: string;
+  token: string;
+  userId: string;
+}
+
 export interface ITokens {
   accessToken: string;
   refreshToken: string;
@@ -15,4 +22,5 @@ export interface ITokens {
 
 export interface SaveRefreshTokens {
   save(refreshId: string, userId: string, role: string): void;
+  saveIdentified(token: string, user: IEmployeeModel): void;
 }

@@ -6,7 +6,7 @@ import {
   validateRegisterEmplyoee,
   changePassword
 } from '../../validation';
-import { permit } from '../../middleware';
+import { permit, checkIdentified } from '../../middleware';
 import { Roles } from '../../enums';
 
 const router = Router();
@@ -17,7 +17,7 @@ router.get('/current', permit([Roles.Employee]), empoyeeController.getCurrent);
 router.put(
   '/password',
   validation(changePassword),
-  permit([Roles.Employee]),
+  checkIdentified(),
   empoyeeController.changePassword
 );
 

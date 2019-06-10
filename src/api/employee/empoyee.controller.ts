@@ -29,17 +29,11 @@ class ClientController {
   }
 
   public changePassword(req: Request, res: Response): void {
-    if (req.user.status === StatusUsers.NeedChangePassword) {
-      EmployeeService.changeFirsrtPassword(req.body, req.user._id).then(result =>
-        !(result instanceof Error)
-          ? res.status(200).json({ success: true })
-          : res.status(result.status).json({ message: result.message, success: false })
-      );
-    } else {
-      res
-        .status(400)
-        .json({ message: 'Not router for change old password', success: false });
-    }
+    EmployeeService.changeFirsrtPassword(req.body, req.user).then(result =>
+      !(result instanceof Error)
+        ? res.status(200).json({ success: true })
+        : res.status(result.status).json({ message: result.message, success: false })
+    );
   }
 }
 
