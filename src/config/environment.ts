@@ -1,21 +1,12 @@
 import dotenv from 'dotenv';
-import { object, string, number, validate } from 'joi';
+import { validate } from 'joi';
+import { schemaDev, schemaTest } from '../validation';
 
 var DOT_ENV_FILE = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
-
-const schema = object({
-  NODE_ENV: string()
-    .valid('development', 'test', 'production')
-    .required(),
-  APP_PORT: number().required(),
-  JWT_ENCRYPTION: string().required(),
-  JWT_EXPIRATION: number().required(),
-  MONGODB_HOST: string().required(),
-  EMAIL_SERVER_HOST: string().required(),
-  CLIENT_STUFF_LINK: string().required()
-})
-  .unknown()
-  .required();
+let schema;
+if (process.env.NODE_ENV !== 'test') {
+  schema = schemaDev;
+} else schema = schemaTest;
 
 dotenv.config({ path: DOT_ENV_FILE });
 
@@ -38,7 +29,9 @@ export const config = {
     expiration: envVars.JWT_EXPIRATION
   },
   email: {
-    host: envVars.EMAIL_SERVER_HOST
+    host: envVars.EMAIL_SERVER_HOST,
+    user: envVars.GMAIL_AUTH_USER,
+    pass: envVars.GMAIL_AUTH_PASS
   },
   clients: {
     stuffLink: envVars.CLIENT_STUFF_LINK
