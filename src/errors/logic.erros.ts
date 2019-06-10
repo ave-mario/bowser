@@ -18,7 +18,7 @@ export const logicErr = {
   },
   userBloking: {
     code: 400,
-    msg: 'User bloked'
+    msg: 'User is bloked'
   },
   wrongOldPassword: {
     code: 400,
