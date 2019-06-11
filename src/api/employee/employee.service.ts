@@ -58,7 +58,7 @@ class EmployeeService implements IUserService {
         .exec();
       if (!employee) return new Error(logicErr.incorrectDataToLogin);
 
-      if (employee.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
+      if (employee.status === StatusUsers.Bloking) return new Error(logicErr.userBlocked);
 
       let success = await employee.comparePassword(data.password);
       if (!success) return new Error(logicErr.incorrectDataToLogin);

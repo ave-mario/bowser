@@ -49,7 +49,7 @@ class ClientService implements IUserService {
         .select('+loginCode')
         .exec();
       if (!client) return new Error(logicErr.notFoundUser);
-      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
+      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBlocked);
       try {
         await this.checkLoginCode(client, data.loginCode);
       } catch (err) {
@@ -78,7 +78,7 @@ class ClientService implements IUserService {
         client.attemptLogin = 0;
         client.status = StatusUsers.Bloking;
         client.loginCode = undefined;
-        error = logicErr.userBloking;
+        error = logicErr.userBlocked;
       }
     } else {
       client.attemptLogin = 0;
@@ -96,7 +96,7 @@ class ClientService implements IUserService {
         .select('+loginCode')
         .exec();
       if (!client) return new Error(logicErr.notFoundUser);
-      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
+      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBlocked);
       const code = faker.random.number({ min: 100000, max: 1000000 });
       this._transporter.sendCode(client.email, code);
       client.loginCode = code;

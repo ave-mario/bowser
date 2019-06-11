@@ -20,7 +20,7 @@ export const logicErr = {
   forbidden: {
     msg: 'Forbidden'
   },
-  userBloking: {
+  userBlocked: {
     code: 400,
     msg: 'User is blocked'
   },

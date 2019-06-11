@@ -115,7 +115,7 @@ describe('Client routes', () => {
 
       for (let attempt of attempts) {
         if (attempt === CountAttempt.loginClient) {
-          message = logicErr.userBloking.msg;
+          message = logicErr.userBlocked.msg;
         }
 
         await agent
@@ -136,7 +136,7 @@ describe('Client routes', () => {
       await agent
         .post('/api/clients/code')
         .send({ phoneNumber: newClient.phoneNumber })
-        .expect(400, { success: false, message: logicErr.userBloking.msg });
+        .expect(400, { success: false, message: logicErr.userBlocked.msg });
     });
   });
 
