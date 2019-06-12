@@ -70,7 +70,7 @@ class ClientService implements IUserService {
 
   private async checkLoginCode(client: IClient, loginCode: number): Promise<void> {
     let error;
-    if (client.loginCode !== loginCode) {
+    if (client.loginCode != loginCode) {
       if (client.attemptLogin < CountAttempt.loginClient) {
         client.attemptLogin = client.attemptLogin + 1;
         error = logicErr.wrongCodeToLogin;

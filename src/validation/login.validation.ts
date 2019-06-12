@@ -12,15 +12,6 @@ export const loginClientSchema = object().keys({
     .max(1000000)
 });
 
-export const loginEmployeeSchema = object().keys({
-  email: string()
-    .email()
-    .required(),
-  password: string()
-    .regex(Validate.password)
-    .required()
-});
-
 export const changePassword = object().keys({
   newPassword: string()
     .regex(Validate.password)
