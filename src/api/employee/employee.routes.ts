@@ -1,11 +1,7 @@
 import { empoyeeController } from './empoyee.controller';
 import { Router } from 'express';
 import { validation } from '../../middleware';
-import {
-  loginEmployeeSchema,
-  validateRegisterEmplyoee,
-  changePassword
-} from '../../validation';
+import { validateRegisterEmplyoee, changePassword } from '../../validation';
 import { permit, checkIdentified } from '../../middleware';
 import { Roles } from '../../enums';
 
