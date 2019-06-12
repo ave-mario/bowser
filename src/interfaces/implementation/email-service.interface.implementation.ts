@@ -8,8 +8,13 @@ export class EmailService implements Transporter {
     emailSend(email, content, EmailMessages.code.subject);
   }
 
-  public sendLinkToChangePassword(email: string, token: string, name: string) {
-    const link = config.clients.stuffLink + `welcome?token=${token}&name=${name}`;
+  public sendLinkToChangePassword(
+    originLink: string,
+    email: string,
+    token: string,
+    name: string
+  ) {
+    const link = `${originLink}/welcome?token=${token}&name=${name}`;
     const content = EmailMessages.linkChangePasswrod.content + link;
     emailSend(email, content, EmailMessages.linkChangePasswrod.subject);
   }
