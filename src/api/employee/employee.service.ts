@@ -34,7 +34,6 @@ class EmployeeService implements IUserService {
         phoneNumber: data.phoneNumber,
         password: faker.internet.password()
       });
-
       const token: string = JsonTokens.generateIdentifiedToken(
         newEmployee,
         Roles.Employee

@@ -12,7 +12,7 @@ import { Roles } from '../../enums';
 const router = Router();
 
 router.post('/', validation(validateRegisterEmplyoee), empoyeeController.postRegister);
-router.post('/login', validation(loginEmployeeSchema), empoyeeController.login);
+router.post('/login', empoyeeController.login);
 router.get('/current', permit([Roles.Employee]), empoyeeController.getCurrent);
 router.put(
   '/password',

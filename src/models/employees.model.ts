@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { IEmployee } from '../interfaces';
 import { Validate, StatusUsers } from '../enums';
 import { logicErr } from '../errors';
+import { strict, string } from 'joi';
 
 export interface IEmployeeModel extends IEmployee, Document {
   comparePassword(candidatePassword: string): Promise<Error | boolean>;
