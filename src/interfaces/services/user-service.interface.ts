@@ -7,7 +7,7 @@ import {
   IUserResponseLogin,
   IUser,
   IClient
-} from '../../interfaces';
+} from '../models';
 import { IEmployeeModel } from '../../models';
 
 export interface IUserService {

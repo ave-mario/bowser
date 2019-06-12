@@ -7,14 +7,18 @@ import {
   Error,
   IClient,
   IUserService,
-  IUser
+  IUser,
+  ITokens,
+  EmailService
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
 import { Roles, StatusUsers, CountAttempt } from '../../enums';
-import { EmailService } from '../../utils';
+import { Transport } from '../../utils';
 
 class ClientService implements IUserService {
+  private _transporter: Transport = new Transport(new EmailService());
+
   public async register(data: IClientFieldsToRegister): Promise<Error> {
     try {
       const client = await Client.findOne({
@@ -29,7 +33,7 @@ class ClientService implements IUserService {
         phoneNumber: data.phoneNumber,
         loginCode
       });
-      EmailService.sendCode(newClient.email, loginCode);
+      this._transporter.sendCode(newClient.email, loginCode);
       await newClient.save();
     } catch (error) {
       if (error.code === logicErr.wrongCodeToLogin.code) return error;
@@ -45,7 +49,7 @@ class ClientService implements IUserService {
         .select('+loginCode')
         .exec();
       if (!client) return new Error(logicErr.notFoundUser);
-      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
+      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBlocked);
       try {
         await this.checkLoginCode(client, data.loginCode);
       } catch (err) {
@@ -53,25 +57,20 @@ class ClientService implements IUserService {
       }
 
       const clientObj = client.toObject();
-      const accessToken: string = JsonTokens.generateAccessToken(
-        clientObj._id,
-        Roles.Client
-      );
+      const tokens: ITokens = JsonTokens.generationTokens(clientObj._id, Roles.Client);
 
       return {
         user: clientObj,
-        tokens: {
-          accessToken
-        }
+        tokens
       };
-    } catch {
-      return new Error(technicalErr.databaseCrash);
+    } catch (err) {
+      throw err;
     }
   }
 
   private async checkLoginCode(client: IClient, loginCode: number): Promise<void> {
     let error;
-    if (client.loginCode !== loginCode) {
+    if (client.loginCode != loginCode) {
       if (client.attemptLogin < CountAttempt.loginClient) {
         client.attemptLogin = client.attemptLogin + 1;
         error = logicErr.wrongCodeToLogin;
@@ -79,7 +78,7 @@ class ClientService implements IUserService {
         client.attemptLogin = 0;
         client.status = StatusUsers.Bloking;
         client.loginCode = undefined;
-        error = logicErr.userBloking;
+        error = logicErr.userBlocked;
       }
     } else {
       client.attemptLogin = 0;
@@ -97,9 +96,9 @@ class ClientService implements IUserService {
         .select('+loginCode')
         .exec();
       if (!client) return new Error(logicErr.notFoundUser);
-      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBloking);
+      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBlocked);
       const code = faker.random.number({ min: 100000, max: 1000000 });
-      EmailService.sendCode(client.email, code);
+      this._transporter.sendCode(client.email, code);
       client.loginCode = code;
       await client.save();
     } catch (error) {

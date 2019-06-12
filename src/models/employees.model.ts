@@ -49,10 +49,6 @@ const schema: Schema = new Schema(
       type: Number,
       required: true,
       default: StatusUsers.NeedChangePassword
-    },
-    identifiedToken: {
-      type: String,
-      select: false
     }
   },
   {
