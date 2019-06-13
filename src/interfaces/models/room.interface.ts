@@ -1,14 +1,31 @@
 import { Document } from 'mongoose';
 
 export interface IRoom extends Document {
+  _id: string;
   numberOfRoom: number;
   floor: number;
   countRooms: number;
   countDoubleBeds: number;
   countSingleBeds: number;
   totalNumberBeds: number;
-  services: [{ name: string; price: number; status: number }];
+  services: [{ _id: string; status: number }];
   price: number;
-  photos: [{ urlName: string; name: string }];
+  photos?: [{ urlName: string; name: string }];
   status: number;
+}
+
+export interface IRoomService extends Document {
+  name: string;
+  price: number;
+}
+
+export interface IRoomCreate {
+  numberOfRoom: number;
+  floor: number;
+  countRooms: number;
+  countDoubleBeds: number;
+  countSingleBeds: number;
+  totalNumberBeds: number;
+  services: [{ serviceId: string; status: number }];
+  price: number;
 }

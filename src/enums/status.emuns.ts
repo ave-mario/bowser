@@ -7,3 +7,8 @@ export const enum StatusUsers {
 export enum CountAttempt {
   loginClient = 4
 }
+
+export enum StatusService {
+  Available = 'available',
+  NotAvailable = 'notAvailable'
+}
