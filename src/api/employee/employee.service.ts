@@ -18,7 +18,10 @@ import { Transport } from '../../utils';
 class EmployeeService implements IUserService {
   private _transporter: Transport = new Transport(new EmailService());
 
-  public async register(data: IEmployeeFieldsToRegister): Promise<Error> {
+  public async register(
+    data: IEmployeeFieldsToRegister,
+    originLink: string | string[]
+  ): Promise<Error | void> {
     try {
       const employee = await Employee.findOne({
         $or: [{ email: data.email }, { phoneNumber: data.phoneNumber }]
@@ -40,6 +43,7 @@ class EmployeeService implements IUserService {
       );
 
       this._transporter.sendLinkToChangePassword(
+        originLink,
         newEmployee.email,
         token,
         newEmployee.name

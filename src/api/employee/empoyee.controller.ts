@@ -5,7 +5,8 @@ import { StatusUsers } from '../../enums';
 
 class ClientController {
   public postRegister(req: Request, res: Response): void {
-    EmployeeService.register(req.body).then(result =>
+    const origin = req.headers.origin;
+    EmployeeService.register(req.body, origin).then(result =>
       !result
         ? res.status(201).json({ success: true })
         : res.status(result.status).json({ message: result.message, success: false })

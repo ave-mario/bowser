@@ -19,7 +19,7 @@ import { Transport } from '../../utils';
 class ClientService implements IUserService {
   private _transporter: Transport = new Transport(new EmailService());
 
-  public async register(data: IClientFieldsToRegister): Promise<Error> {
+  public async register(data: IClientFieldsToRegister): Promise<Error | void> {
     try {
       const client = await Client.findOne({
         $or: [{ phoneNumber: data.phoneNumber }, { email: data.email }]

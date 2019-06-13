@@ -11,7 +11,12 @@ export class Transport {
     this._transporter.sendCode(email, code);
   }
 
-  public sendLinkToChangePassword(email: string, token: string, name: string) {
-    this._transporter.sendLinkToChangePassword(email, token, name);
+  public sendLinkToChangePassword(
+    originLink: string | string[],
+    email: string,
+    token: string,
+    name: string
+  ) {
+    this._transporter.sendLinkToChangePassword(originLink, email, token, name);
   }
 }

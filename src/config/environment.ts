@@ -34,8 +34,5 @@ export const config = {
     host: envVars.EMAIL_SERVER_HOST,
     user: envVars.GMAIL_AUTH_USER,
     pass: envVars.GMAIL_AUTH_PASS
-  },
-  clients: {
-    stuffLink: envVars.CLIENT_STUFF_LINK
   }
 };
