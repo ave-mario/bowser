@@ -23,6 +23,26 @@ class RoomsServices {
     const services = await RoomServices.paginate({}, options);
     return services;
   }
+
+  public async getById(id: string): Promise<IRoomService> {
+    const service = await RoomServices.findById(id);
+    const data = service.toObject();
+    return data;
+  }
+
+  public async update(_id: string, data: IRoomService): Promise<boolean> {
+    try {
+      await RoomServices.updateOne(
+        { _id },
+        {
+          ...data
+        }
+      );
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export default new RoomsServices();

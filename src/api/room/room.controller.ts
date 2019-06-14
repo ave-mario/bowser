@@ -30,11 +30,14 @@ class RoomController implements Controller {
       .getById(req.params.id)
       .then(room => res.status(200).json({ success: true, room }));
   }
+
   public update(req: Request, res: Response): void {
-    throw new Error('Method not implemented.');
-  }
-  public remove(req: Request, res: Response): void {
-    throw new Error('Method not implemented.');
+    service
+      .update(req.params.id, req.body)
+      .then(() => res.status(200).json({ success: true }))
+      .catch(err => {
+        res.status(500).json({ success: false, message: err.message });
+      });
   }
 }
 

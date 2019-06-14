@@ -10,5 +10,11 @@ const router = Router();
 router.post('/', permit([Roles.Employee]), validation(roomCreate), roomController.create);
 router.get('/', roomController.get);
 router.get('/:id', roomController.getById);
+router.put(
+  '/:id',
+  permit([Roles.Employee]),
+  validation(roomCreate),
+  roomController.update
+);
 
 export const roomRouter = router;

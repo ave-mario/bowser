@@ -43,3 +43,10 @@ export const roomServiceCreate = object().keys({
       .min(0)
   })
 });
+
+export const roomServiceUpdate = object().keys({
+  name: string().required(),
+  price: number()
+    .required()
+    .min(0)
+});

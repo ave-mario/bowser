@@ -5,5 +5,4 @@ export interface Controller {
   getById(req: Request, res: Response): void;
   create(req: Request, res: Response): void;
   update(req: Request, res: Response): void;
-  remove(req: Request, res: Response): void;
 }

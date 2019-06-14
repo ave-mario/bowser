@@ -33,6 +33,20 @@ class RoomService {
     const data = room.toObject();
     return data;
   }
+
+  public async update(_id: string, data: IRoomCreate): Promise<boolean> {
+    try {
+      await Room.updateOne(
+        { _id },
+        {
+          ...data
+        }
+      );
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export default new RoomService();
