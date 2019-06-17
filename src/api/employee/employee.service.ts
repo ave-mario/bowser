@@ -14,7 +14,8 @@ import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
 import { Roles, StatusUsers } from '../../enums';
 import { Transport } from '../../utils';
-
+import { config } from '../../config/environment';
+import { date } from 'joi';
 class EmployeeService implements IUserService {
   private _transporter: Transport = new Transport(new EmailService());
 
@@ -61,16 +62,20 @@ class EmployeeService implements IUserService {
         .exec();
       if (!employee) return new Error(logicErr.incorrectDataToLogin);
 
-      if (employee.status === StatusUsers.Bloking) return new Error(logicErr.userBlocked);
+      if (employee.status === StatusUsers.Blocking)
+        return new Error(logicErr.userBlocked);
 
       let success = await employee.comparePassword(data.password);
       if (!success) return new Error(logicErr.incorrectDataToLogin);
 
       const clientObj = employee.toObject();
       const tokens: ITokens = JsonTokens.generationTokens(clientObj._id, Roles.Employee);
+      let dateNow: Date = new Date();
+      dateNow.setSeconds(dateNow.getSeconds() + config.jwt.accessExpiration);
       return {
         user: clientObj,
-        tokens
+        tokens,
+        access_expires_in: dateNow.getTime()
       };
     } catch {
       return new Error(technicalErr.databaseCrash);
@@ -87,7 +92,7 @@ class EmployeeService implements IUserService {
     }
   }
 
-  public async changeFirsrtPassword(
+  public async changeFirstPassword(
     data: { newPassword: string },
     employee: IEmployeeModel
   ): Promise<Error | boolean> {

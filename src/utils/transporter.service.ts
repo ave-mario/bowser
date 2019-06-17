@@ -1,9 +1,9 @@
-import { Transporter } from '../interfaces';
+import { ITransporter } from '../interfaces';
 
 export class Transport {
-  private _transporter: Transporter;
+  private _transporter: ITransporter;
 
-  public constructor(transporter: Transporter) {
+  public constructor(transporter: ITransporter) {
     this._transporter = transporter;
   }
 

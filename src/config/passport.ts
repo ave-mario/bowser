@@ -13,7 +13,7 @@ export class Passport {
     };
 
     passport.use(
-      'resresh-jwt',
+      'refresh-jwt',
       new Strategy(
         option,
         async (
@@ -92,6 +92,6 @@ export class Passport {
 export const initialize = () => passport.initialize();
 export const authenticateJwt = () => passport.authenticate('jwt', { session: false });
 export const authenticateRefreshJwt = () =>
-  passport.authenticate('resresh-jwt', { session: false });
-export const authenticateidentifiedToken = () =>
+  passport.authenticate('refresh-jwt', { session: false });
+export const authenticateIdentifiedToken = () =>
   passport.authenticate('identified-jwt', { session: false });

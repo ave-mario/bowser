@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import ClientService from './clients.service';
+import ClientService from './client.service';
 import { Error } from '../../interfaces';
 
 class ClientController {

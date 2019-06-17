@@ -1,10 +1,10 @@
 export const EmailMessages = {
   code: {
-    subject: 'Confirm your accaunt',
+    subject: 'Confirm your account',
     content: 'You code of login: '
   },
-  linkChangePasswrod: {
+  linkChangePassword: {
     subject: 'Change password',
-    content: 'Go to link for set new your passwrod: '
+    content: 'Go to link for set new your password: '
   }
 };

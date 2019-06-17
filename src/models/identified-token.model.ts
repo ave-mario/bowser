@@ -1,5 +1,5 @@
 import { Schema, Model, model } from 'mongoose';
-import { ITokenIdenfied } from '../interfaces';
+import { ITokenIdentified } from '../interfaces';
 
 var schema = new Schema({
   token: {
@@ -19,7 +19,7 @@ var schema = new Schema({
   }
 });
 
-export const IdentifiedToken: Model<ITokenIdenfied> = model<ITokenIdenfied>(
+export const IdentifiedToken: Model<ITokenIdentified> = model<ITokenIdentified>(
   'IdentifiedToken',
   schema
 );
