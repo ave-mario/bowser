@@ -35,16 +35,7 @@ export const roomCreate = object().keys({
     .required()
 });
 
-export const roomServiceCreate = object().keys({
-  services: array().items({
-    name: string().required(),
-    price: number()
-      .required()
-      .min(0)
-  })
-});
-
-export const roomServiceUpdate = object().keys({
+export const roomService = object().keys({
   name: string().required(),
   price: number()
     .required()

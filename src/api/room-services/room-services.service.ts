@@ -4,9 +4,11 @@ import { technicalErr } from '../../errors';
 import { PaginateResult } from 'mongoose';
 
 class RoomsServices {
-  public async create(data: IRoomService[]): Promise<void> {
+  public async create(data: IRoomService): Promise<void> {
     try {
-      await RoomServices.collection.insertMany(data);
+      await new RoomServices({
+        ...data
+      }).save();
     } catch (err) {
       throw new Error(technicalErr.databaseCrash);
     }

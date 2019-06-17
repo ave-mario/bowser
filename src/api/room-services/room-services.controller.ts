@@ -5,7 +5,7 @@ import { Controller } from '../../interfaces/controller.interface';
 class RoomController implements Controller {
   public create(req: Request, res: Response): void {
     service
-      .create(req.body.services)
+      .create(req.body)
       .then(() => res.status(200).json({ success: true }))
       .catch(err => {
         res.status(500).json({ success: false, message: err.message });
