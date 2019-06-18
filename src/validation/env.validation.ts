@@ -5,6 +5,7 @@ export const schemaDev = object({
     .valid('development', 'test', 'production')
     .required(),
   APP_PORT: number().required(),
+  JWT_ENCRYPTION: string().required(),
   JWT_ACCESS_EXPIRATION: number().required(),
   JWT_REFRESH_EXPIRATION: number().required(),
   JWT_IDENTIFIED_EXPIRATION: number().required(),
@@ -20,6 +21,7 @@ export const schemaTest = object({
   NODE_ENV: string()
     .valid('development', 'test', 'production')
     .required(),
+  JWT_ENCRYPTION: string().required(),
   JWT_ACCESS_EXPIRATION: number().required(),
   JWT_REFRESH_EXPIRATION: number().required(),
   JWT_IDENTIFIED_EXPIRATION: number().required(),
