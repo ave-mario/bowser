@@ -127,12 +127,12 @@ describe('Client routes', () => {
       const client = await Client.findOne({ phoneNumber: newClient.phoneNumber });
 
       expect(client.attemptLogin).toBe(0);
-      expect(client.status).toBe(StatusUsers.Bloking);
+      expect(client.status).toBe(StatusUsers.Blocking);
     });
   });
 
   describe('POST /api/clients/code', () => {
-    it('when send code after bloking user then error send', async () => {
+    it('when send code after blocking user then error send', async () => {
       await agent
         .post('/api/clients/code')
         .send({ phoneNumber: newClient.phoneNumber })

@@ -26,9 +26,9 @@ export const config = {
   },
   jwt: {
     secret: envVars.JWT_ENCRYPTION,
-    accessExpiration: envVars.JWT_ACCESS_EXPIRATION,
-    refreshExpiration: envVars.JWT_REFRESH_EXPIRATION,
-    identifiedExpiration: envVars.JWT_IDENTIFIED_EXPIRATION
+    accessExpiration: Number(envVars.JWT_ACCESS_EXPIRATION),
+    refreshExpiration: Number(envVars.JWT_REFRESH_EXPIRATION),
+    identifiedExpiration: Number(envVars.JWT_IDENTIFIED_EXPIRATION)
   },
   email: {
     host: envVars.EMAIL_SERVER_HOST,

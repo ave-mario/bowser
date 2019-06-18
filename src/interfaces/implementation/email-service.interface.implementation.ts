@@ -1,8 +1,8 @@
-import { Transporter } from '../services';
+import { ITransporter } from '../services';
 import { emailSend, config } from '../../config';
 import { EmailMessages } from '../../enums';
 
-export class EmailService implements Transporter {
+export class EmailService implements ITransporter {
   public sendCode(email: string, code: number) {
     const content = EmailMessages.code.content + code;
     emailSend(email, content, EmailMessages.code.subject);
@@ -15,7 +15,7 @@ export class EmailService implements Transporter {
     name: string
   ) {
     const link = `${originLink}/welcome?token=${token}&name=${name}`;
-    const content = EmailMessages.linkChangePasswrod.content + link;
-    emailSend(email, content, EmailMessages.linkChangePasswrod.subject);
+    const content = EmailMessages.linkChangePassword.content + link;
+    emailSend(email, content, EmailMessages.linkChangePassword.subject);
   }
 }

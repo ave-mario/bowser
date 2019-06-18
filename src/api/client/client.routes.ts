@@ -1,4 +1,4 @@
-import { clientController } from './clients.controller';
+import { clientController } from './client.controller';
 import { Router } from 'express';
 import { validation } from '../../middleware';
 import { validateRegisterClient, loginClientSchema } from '../../validation';

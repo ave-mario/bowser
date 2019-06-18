@@ -19,7 +19,7 @@ export const validateRegisterClient = object().keys({
     .required()
 });
 
-export const validateRegisterEmplyoee = object().keys({
+export const validateRegisterEmployee = object().keys({
   phoneNumber: string()
     .length(13)
     .required()

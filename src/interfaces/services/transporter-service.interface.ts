@@ -1,5 +1,5 @@
-export interface Transporter {
-  sendCode(transpor: string, code: number): void;
+export interface ITransporter {
+  sendCode(transport: string, code: number): void;
   sendLinkToChangePassword(
     originLink: string | string[],
     email: string,

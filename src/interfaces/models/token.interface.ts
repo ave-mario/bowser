@@ -9,7 +9,7 @@ export interface ITokenModel extends Document {
   isValid: boolean;
 }
 
-export interface ITokenIdenfied extends Document {
+export interface ITokenIdentified extends Document {
   _id: string;
   token: string;
   userId: string;
@@ -20,7 +20,7 @@ export interface ITokens {
   refreshToken: string;
 }
 
-export interface SaveRefreshTokens {
+export interface ISaveRefreshTokens {
   save(refreshId: string, userId: string, role: string): void;
   saveIdentified(token: string, user: IEmployeeModel): void;
 }

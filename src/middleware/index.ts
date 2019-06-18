@@ -1,2 +1,2 @@
-export * from './validation.midleware';
+export * from './validation.middleware';
 export * from './permission.middleware';

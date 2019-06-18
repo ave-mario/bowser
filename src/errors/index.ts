@@ -1,3 +1,3 @@
 export * from './errCode';
-export * from './logic.erros';
+export * from './logic.errors';
 export * from './technical.errors';
