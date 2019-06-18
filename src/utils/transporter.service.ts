@@ -1,9 +1,9 @@
-import { Transporter } from '../interfaces';
+import { ITransporter } from '../interfaces';
 
 export class Transport {
-  private _transporter: Transporter;
+  private _transporter: ITransporter;
 
-  public constructor(transporter: Transporter) {
+  public constructor(transporter: ITransporter) {
     this._transporter = transporter;
   }
 
@@ -11,7 +11,12 @@ export class Transport {
     this._transporter.sendCode(email, code);
   }
 
-  public sendLinkToChangePassword(email: string, token: string, name: string) {
-    this._transporter.sendLinkToChangePassword(email, token, name);
+  public sendLinkToChangePassword(
+    originLink: string | string[],
+    email: string,
+    token: string,
+    name: string
+  ) {
+    this._transporter.sendLinkToChangePassword(originLink, email, token, name);
   }
 }

@@ -7,7 +7,7 @@ export const logicErr = {
   },
   incorrectDataToLogin: {
     code: LogicErrCodes.IncorrectDataToLogin,
-    msg: 'Email or password incorrecrt'
+    msg: 'Email or password incorrect'
   },
   notFoundUser: {
     code: LogicErrCodes.NotFoundUser,

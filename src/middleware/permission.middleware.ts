@@ -1,7 +1,7 @@
 import {
   authenticateJwt,
   authenticateRefreshJwt,
-  authenticateidentifiedToken
+  authenticateIdentifiedToken
 } from '../config';
 import { logicErr } from '../errors';
 import { Response, Request, NextFunction } from 'express';
@@ -27,5 +27,5 @@ export function authRefresh() {
 }
 
 export function checkIdentified() {
-  return authenticateidentifiedToken();
+  return authenticateIdentifiedToken();
 }

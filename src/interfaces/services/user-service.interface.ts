@@ -11,7 +11,10 @@ import {
 import { IEmployeeModel } from '../../models';
 
 export interface IUserService {
-  register(data: IEmployeeFieldsToRegister | IClientFieldsToRegister): Promise<Error>;
+  register(
+    data: IEmployeeFieldsToRegister | IClientFieldsToRegister,
+    originLink?: string
+  ): Promise<Error | void>;
   login(data: IClientToLogin | IEmployeeToLogin): Promise<Error | IUserResponseLogin>;
   getCurrent(data: IClient | IEmployeeModel): Promise<Error | IUser>;
 }

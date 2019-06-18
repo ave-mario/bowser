@@ -1,7 +1,7 @@
-import { SaveRefreshTokens } from '../models';
+import { ISaveRefreshTokens } from '../models';
 import { Token, IEmployeeModel, IdentifiedToken } from '../../models';
 
-export class SaveTokenToMongoDB implements SaveRefreshTokens {
+export class SaveTokenToMongoDB implements ISaveRefreshTokens {
   public save(refreshId: string, userId: string, role: string): void {
     Token.findOne({ userId }, async (err, data) => {
       if (data) {

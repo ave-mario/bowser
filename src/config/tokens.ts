@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import { config } from './environment';
-import { ITokens, SaveRefreshTokens, SaveTokenToMongoDB } from '../interfaces';
+import { ITokens, ISaveRefreshTokens, SaveTokenToMongoDB } from '../interfaces';
 import { IEmployeeModel } from '../models';
 
 class Tokens {
-  private _refreshToDB: SaveRefreshTokens;
+  private _refreshToDB: ISaveRefreshTokens;
 
-  public constructor(refreshToDB: SaveRefreshTokens) {
+  public constructor(refreshToDB: ISaveRefreshTokens) {
     this._refreshToDB = refreshToDB;
   }
 

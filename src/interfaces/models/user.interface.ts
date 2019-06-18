@@ -5,6 +5,7 @@ export interface IUserResponseLogin {
   tokens: {
     accessToken: string;
   };
+  access_expires_in: number;
 }
 
 export interface IUser {

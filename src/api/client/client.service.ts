@@ -15,11 +15,13 @@ import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
 import { Roles, StatusUsers, CountAttempt } from '../../enums';
 import { Transport } from '../../utils';
+import { config } from '../../config/environment';
+import { date } from 'joi';
 
 class ClientService implements IUserService {
   private _transporter: Transport = new Transport(new EmailService());
 
-  public async register(data: IClientFieldsToRegister): Promise<Error> {
+  public async register(data: IClientFieldsToRegister): Promise<Error | void> {
     try {
       const client = await Client.findOne({
         $or: [{ phoneNumber: data.phoneNumber }, { email: data.email }]
@@ -49,7 +51,7 @@ class ClientService implements IUserService {
         .select('+loginCode')
         .exec();
       if (!client) return new Error(logicErr.notFoundUser);
-      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBlocked);
+      if (client.status === StatusUsers.Blocking) return new Error(logicErr.userBlocked);
       try {
         await this.checkLoginCode(client, data.loginCode);
       } catch (err) {
@@ -58,10 +60,11 @@ class ClientService implements IUserService {
 
       const clientObj = client.toObject();
       const tokens: ITokens = JsonTokens.generationTokens(clientObj._id, Roles.Client);
-
+      let dateNow: Date = new Date();
       return {
         user: clientObj,
-        tokens
+        tokens,
+        access_expires_in: dateNow.getDate()
       };
     } catch (err) {
       throw err;
@@ -76,7 +79,7 @@ class ClientService implements IUserService {
         error = logicErr.wrongCodeToLogin;
       } else {
         client.attemptLogin = 0;
-        client.status = StatusUsers.Bloking;
+        client.status = StatusUsers.Blocking;
         client.loginCode = undefined;
         error = logicErr.userBlocked;
       }
@@ -96,7 +99,7 @@ class ClientService implements IUserService {
         .select('+loginCode')
         .exec();
       if (!client) return new Error(logicErr.notFoundUser);
-      if (client.status === StatusUsers.Bloking) return new Error(logicErr.userBlocked);
+      if (client.status === StatusUsers.Blocking) return new Error(logicErr.userBlocked);
       const code = faker.random.number({ min: 100000, max: 1000000 });
       this._transporter.sendCode(client.email, code);
       client.loginCode = code;
