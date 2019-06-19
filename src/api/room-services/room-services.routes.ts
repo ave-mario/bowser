@@ -8,8 +8,8 @@ import { Roles } from '../../enums';
 const router = Router();
 
 router.post('/', permit([Roles.Employee]), validation(roomService), controller.create);
-router.get('/', controller.get);
-router.get('/:id', controller.getById);
+router.get('/', permit([Roles.Employee]), controller.get);
+router.get('/:id', permit([Roles.Employee]), controller.getById);
 router.put('/:id', permit([Roles.Employee]), validation(roomService), controller.update);
 
 export const roomServicesRouter = router;

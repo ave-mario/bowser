@@ -1,16 +1,16 @@
 import { Error, IRoomService } from '../../interfaces';
 import { RoomServices } from '../../models';
-import { technicalErr } from '../../errors';
+import { technicalErr, logicErr } from '../../errors';
 import { PaginateResult } from 'mongoose';
 
 class RoomsServices {
-  public async create(data: IRoomService): Promise<void> {
+  public async create(data: IRoomService): Promise<Error> {
     try {
       await new RoomServices({
         ...data
       }).save();
     } catch (err) {
-      throw new Error(technicalErr.databaseCrash);
+      return new Error(logicErr.dataAlreadyExist);
     }
   }
 

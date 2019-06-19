@@ -1,6 +1,7 @@
 import service from './room.service';
 import { Request, Response } from 'express';
 import { Controller } from '../../interfaces/controller.interface';
+import { technicalErr } from '../../errors';
 
 class RoomController implements Controller {
   public create(req: Request, res: Response): void {
@@ -8,11 +9,11 @@ class RoomController implements Controller {
       .create(req.body)
       .then(result =>
         !result
-          ? res.status(200).json({ success: true })
-          : res.status(400).json({ message: result.message, success: true })
+          ? res.status(201).json({ success: true })
+          : res.status(400).json({ message: result.message, success: false })
       )
-      .catch(err => {
-        res.status(500).json({ success: false, message: err.message });
+      .catch(() => {
+        res.status(500).json({ success: false, message: technicalErr.databaseCrash.msg });
       });
   }
 

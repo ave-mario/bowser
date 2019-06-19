@@ -1,24 +1,26 @@
 import { Error, IRoomCreate, IRoom } from '../../interfaces';
 import { Room } from '../../models';
 import { StatusService } from '../../enums';
-import { technicalErr } from '../../errors';
+import { technicalErr, logicErr } from '../../errors';
 import { PaginateResult } from 'mongoose';
 
 class RoomService {
-  public async create(data: IRoomCreate): Promise<Error> {
+  public async create(data: IRoomCreate): Promise<Error | void> {
+    const room = new Room({
+      ...data,
+      status: StatusService.Available
+    });
+
     try {
-      new Room({
-        ...data,
-        status: StatusService.Available
-      }).save();
-    } catch (err) {
-      return new Error(technicalErr.databaseCrash);
+      await room.save();
+    } catch {
+      return new Error(logicErr.dataAlreadyExist);
     }
   }
 
   public async get(queries: {
-    page: string;
-    perPage: string;
+    page?: string;
+    perPage?: string;
   }): Promise<PaginateResult<IRoom>> {
     const options = {
       page: parseInt(queries.page, 10) || 1,

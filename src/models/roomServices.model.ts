@@ -6,8 +6,7 @@ const schema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
-    trim: true
+    unique: true
   },
   price: {
     type: Number,

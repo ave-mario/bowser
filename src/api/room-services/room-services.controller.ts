@@ -6,7 +6,11 @@ class RoomController implements Controller {
   public create(req: Request, res: Response): void {
     service
       .create(req.body)
-      .then(() => res.status(200).json({ success: true }))
+      .then(result =>
+        !result
+          ? res.status(201).json({ success: true })
+          : res.status(201).json({ success: false, message: result.message })
+      )
       .catch(err => {
         res.status(500).json({ success: false, message: err.message });
       });

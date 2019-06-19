@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export interface IRoom extends Document {
   _id: string;
@@ -26,6 +26,6 @@ export interface IRoomCreate {
   countDoubleBeds: number;
   countSingleBeds: number;
   totalNumberBeds: number;
-  services: [{ serviceId: string; status: number }];
+  services: { _id: string; status: string }[];
   price: number;
 }
