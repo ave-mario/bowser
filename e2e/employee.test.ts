@@ -49,11 +49,11 @@ describe('Employee routes', () => {
     });
 
     it('when data not have address then error in validation', async () => {
-      const employeeWithouAddress = newEmployee;
-      delete employeeWithouAddress.address;
+      const employeeWithoutAddress = newEmployee;
+      delete employeeWithoutAddress.address;
       await agent
         .post('/api/employees/')
-        .send(employeeWithouAddress)
+        .send(employeeWithoutAddress)
         .expect(400)
         .expect(res => {
           expect(res.body).toHaveProperty('success', false);

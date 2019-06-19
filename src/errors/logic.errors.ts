@@ -31,5 +31,9 @@ export const logicErr = {
   wrongNewPassword: {
     code: 400,
     msg: 'Wrong new password'
+  },
+  dataAlreadyExist: {
+    code: 400,
+    msg: 'Data already exist'
   }
 };

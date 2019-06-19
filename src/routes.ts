@@ -1,8 +1,12 @@
 import { Router, Request, Response } from 'express';
-import { clientRouter } from './api/client';
 import { version } from '../package.json';
-import { employeeRouter } from './api/employee';
-import { authRouter } from './api/auth';
+import {
+  clientRouter,
+  employeeRouter,
+  authRouter,
+  roomRouter,
+  roomServicesRouter
+} from './api';
 const router = Router();
 
 router.get('/health', (req: Request, res: Response) => {
@@ -16,5 +20,7 @@ router.get('/health', (req: Request, res: Response) => {
 router.use('/clients', clientRouter);
 router.use('/employees', employeeRouter);
 router.use('/auth', authRouter);
+router.use('/rooms', roomRouter);
+router.use('/rooms-services', roomServicesRouter);
 
 export default router;

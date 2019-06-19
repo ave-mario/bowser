@@ -4,3 +4,4 @@ export * from './employees.model';
 export * from './room.model';
 export * from './token.model';
 export * from './identified-token.model';
+export * from './roomServices.model';

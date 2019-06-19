@@ -1,5 +1,7 @@
-import { Schema, Model, model } from 'mongoose';
-import { IRoom } from '../interfaces';
+import { Schema, model } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate';
+import { IRoom, IPaginateModel } from '../interfaces';
+import { StatusService } from '../enums';
 
 const schema = new Schema(
   {
@@ -31,9 +33,16 @@ const schema = new Schema(
     services: {
       type: [
         {
-          name: String,
-          price: Number,
-          status: Number
+          _id: {
+            type: Schema.Types.ObjectId,
+            ref: 'RoomServices',
+            required: true
+          },
+          status: {
+            type: String,
+            default: StatusService.Available,
+            required: true
+          }
         }
       ],
       required: true,
@@ -60,8 +69,9 @@ const schema = new Schema(
       minlength: 2
     },
     status: {
-      type: Number,
-      required: true
+      type: String,
+      required: true,
+      default: StatusService.Available
     }
   },
   {
@@ -82,5 +92,6 @@ schema.set('toObject', {
     delete ret.__v;
   }
 });
+schema.plugin(mongoosePaginate);
 
-export const Room: Model<IRoom> = model<IRoom>('Rooms', schema);
+export const Room: IPaginateModel<IRoom> = model<IRoom>('Rooms', schema);
