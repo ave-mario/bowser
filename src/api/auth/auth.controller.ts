@@ -5,8 +5,8 @@ class AuthController {
   public refreshToken(req: Request, res: Response): void {
     service
       .refreshToken(req.user._id, req.authInfo)
-      .then(tokens => {
-        res.status(200).json({ tokens, success: true });
+      .then(tokenData => {
+        res.status(200).json({ tokenData });
       })
       .catch(err => {
         res.status(500).json({ success: false, message: err.message });
