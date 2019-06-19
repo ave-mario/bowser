@@ -63,8 +63,10 @@ class ClientService implements IUserService {
       let dateNow: Date = new Date();
       return {
         user: clientObj,
-        tokens,
-        access_expires_in: dateNow.getDate()
+        tokenData: {
+          tokens,
+          access_expires_in: dateNow.getTime()
+        }
       };
     } catch (err) {
       throw err;

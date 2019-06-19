@@ -48,7 +48,6 @@ describe('Client routes', () => {
         .send(newClient)
         .expect(400)
         .expect(res => {
-          expect(res.body).toHaveProperty('success', false);
           expect(res.body).toHaveProperty('message', expect.any(String));
         });
     });
@@ -56,10 +55,7 @@ describe('Client routes', () => {
 
   describe('POST /api/clients/code', () => {
     it('when send code after register & user with phone is exist then set new login code', async () => {
-      await agent
-        .post('/api/clients/code')
-        .send({ phoneNumber: newClient.phoneNumber })
-        .expect(200, { success: true });
+      await agent.post('/api/clients/code').send({ phoneNumber: newClient.phoneNumber });
     });
   });
 
@@ -78,14 +74,16 @@ describe('Client routes', () => {
         .send(user)
         .expect(200);
 
-      expect(res.body).toHaveProperty('success', true);
-      expect(res.body).toHaveProperty('tokens', {
-        accessToken: expect.any(String),
-        refreshToken: expect.any(String)
+      expect(res.body).toHaveProperty('tokenData', {
+        tokens: {
+          accessToken: expect.any(String),
+          refreshToken: expect.any(String)
+        },
+        access_expires_in: expect.any(Number)
       });
       expect(res.body).toHaveProperty('user', expect.any(Object));
-      accessToken = res.body.tokens.accessToken;
-      refreshToken = res.body.tokens.refreshToken;
+      accessToken = res.body.tokenData.tokens.accessToken;
+      refreshToken = res.body.tokenData.tokens.refreshToken;
     });
   });
   describe('POST /api/auth/refresh-tokens', () => {
@@ -95,13 +93,15 @@ describe('Client routes', () => {
         .set('Authorization', 'Bearer ' + refreshToken)
         .expect(200);
 
-      expect(res.body).toHaveProperty('success', true);
-      expect(res.body).toHaveProperty('tokens', {
-        accessToken: expect.any(String),
-        refreshToken: expect.any(String)
+      expect(res.body).toHaveProperty('tokenData', {
+        tokens: {
+          accessToken: expect.any(String),
+          refreshToken: expect.any(String)
+        },
+        access_expires_in: expect.any(Number)
       });
-      accessToken = res.body.tokens.accessToken;
-      refreshToken = res.body.tokens.refreshToken;
+      accessToken = res.body.tokenData.tokens.accessToken;
+      refreshToken = res.body.tokenData.tokens.refreshToken;
     });
   });
   describe('POST /api/clients/login', () => {
@@ -121,7 +121,7 @@ describe('Client routes', () => {
         await agent
           .post('/api/clients/login')
           .send(user)
-          .expect(400, { success: false, message });
+          .expect(400, { message });
       }
 
       const client = await Client.findOne({ phoneNumber: newClient.phoneNumber });
@@ -136,7 +136,7 @@ describe('Client routes', () => {
       await agent
         .post('/api/clients/code')
         .send({ phoneNumber: newClient.phoneNumber })
-        .expect(400, { success: false, message: logicErr.userBlocked.msg });
+        .expect(400, { message: logicErr.userBlocked.msg });
     });
   });
 

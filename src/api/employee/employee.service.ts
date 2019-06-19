@@ -74,8 +74,10 @@ class EmployeeService implements IUserService {
       dateNow.setSeconds(dateNow.getSeconds() + config.jwt.accessExpiration);
       return {
         user: clientObj,
-        tokens,
-        access_expires_in: dateNow.getTime()
+        tokenData: {
+          tokens,
+          access_expires_in: dateNow.getTime()
+        }
       };
     } catch {
       return new Error(technicalErr.databaseCrash);

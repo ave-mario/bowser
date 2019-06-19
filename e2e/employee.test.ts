@@ -43,8 +43,7 @@ describe('Employee routes', () => {
         .post('/api/employees/')
         .send(newEmployee)
         .expect(400, {
-          message: logicErr.userIsAlreadyRegistered.msg,
-          success: false
+          message: logicErr.userIsAlreadyRegistered.msg
         });
     });
 
@@ -94,13 +93,15 @@ describe('Employee routes', () => {
         .send(client)
         .expect(200);
 
-      expect(res.body).toHaveProperty('success', true);
-      expect(res.body).toHaveProperty('tokens', {
-        accessToken: expect.any(String),
-        refreshToken: expect.any(String)
+      expect(res.body).toHaveProperty('tokenData', {
+        tokens: {
+          accessToken: expect.any(String),
+          refreshToken: expect.any(String)
+        },
+        access_expires_in: expect.any(Number)
       });
       expect(res.body).toHaveProperty('user', expect.any(Object));
-      token = res.body.tokens.accessToken;
+      token = res.body.tokenData.tokens.accessToken;
     });
   });
 
@@ -111,7 +112,6 @@ describe('Employee routes', () => {
         .set('Authorization', 'Bearer ' + token)
         .expect(200)
         .expect(res => {
-          expect(res.body).toHaveProperty('success', true);
           expect(res.body).toHaveProperty('user', expect.any(Object));
         });
     });
