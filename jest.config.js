@@ -3,7 +3,7 @@ module.exports = {
   transform: {
     '^.+\\.(tsx|ts)?$': 'ts-jest'
   },
-  testRegex: '(/e2e/.*|(\\.|/)(test|spec))\\.(js|ts|tsx)?$',
+  testRegex: '(/e2e/.*.(test|spec)).(ts|tsx)?$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testEnvironment: 'node',
   coveragePathIgnorePatterns: ['/node_modules/', '/e2e/', '/.vscode/', '/.github/'],
@@ -11,7 +11,8 @@ module.exports = {
   collectCoverage: true,
   coverageThreshold: {
     global: {
-      lines: 60
+      lines: 60,
+      branches: 60
     }
   }
 };
