@@ -4,13 +4,15 @@ import { technicalErr, logicErr } from '../../errors';
 import { PaginateResult } from 'mongoose';
 
 class RoomsServices {
-  public async create(data: IRoomService): Promise<Error> {
+  public async create(data: IRoomService): Promise<IRoomService | Error> {
     try {
-      await new RoomServices({
+      return await new RoomServices({
         ...data
-      }).save();
-    } catch (err) {
-      return new Error(logicErr.dataAlreadyExist);
+      })
+        .save()
+        .then(service => service);
+    } catch {
+      throw new Error(logicErr.dataAlreadyExist);
     }
   }
 

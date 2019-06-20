@@ -40,11 +40,12 @@ describe('Services of room routes', () => {
         .post('/api/rooms-services')
         .set('Authorization', 'Bearer ' + token)
         .send(newAddition)
-        .expect({ success: true })
-        .expect(201);
-
-      const service = await RoomServices.findOne({ name: newAddition.name });
-      expect(service.name).toBe(newAddition.name);
+        .expect(201)
+        .expect(res => {
+          const { name, price } = res.body.addition;
+          expect(name).toBe(newAddition.name);
+          expect(price).toBe(Number.parseFloat(newAddition.price));
+        });
     });
   });
 
