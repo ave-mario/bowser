@@ -30,11 +30,13 @@
     "bcrypt": "^3.0.6",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
+    "install": "^0.12.2",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.10",
     "mongoose-paginate": "^5.0.3",
     "nodemailer": "^6.2.1",
+    "npm": "^6.9.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "uuid": "^3.3.2"

@@ -50,7 +50,7 @@ async function changePasswordEmployee(
     password: newPassword
   };
   const res = await agent.post('/api/employees/login').send(client);
-  const token = res.body.tokens.accessToken;
+  const token = res.body.tokenData.tokens.accessToken;
 
   return token;
 }

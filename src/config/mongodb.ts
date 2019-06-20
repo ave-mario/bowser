@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { config } from './environment';
-
+import seedingMongo from './seeds';
 const { app, mongo } = config;
 const options = {
   useNewUrlParser: true
@@ -30,6 +30,11 @@ export function initializeDb(callback: (mongo: any) => void): void {
     .then(
       (): void => {
         callback(mongoose);
+      }
+    )
+    .then(
+      (): void => {
+        seedingMongo();
       }
     )
     .catch((err): void => console.error(err.toString()));
