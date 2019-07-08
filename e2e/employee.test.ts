@@ -9,6 +9,9 @@ import { logicErr } from '../src/errors';
 const agent = request.agent(server);
 
 describe('Employee routes', () => {
+  beforeAll(async () => {
+    await Employee.deleteMany({});
+  });
   let token = '';
   let identifiedToken: string;
   const newPassword = faker.internet.password();
@@ -20,7 +23,6 @@ describe('Employee routes', () => {
     phoneNumber: faker.phone.phoneNumber('+375#########'),
     address: `${faker.address.country()}, ${faker.address.city()}, ${faker.address.streetAddress()}`
   };
-
   describe('POST /api/employees is add new', () => {
     it('when all data is correct then the employee is added', async () => {
       await agent

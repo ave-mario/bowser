@@ -85,7 +85,6 @@ schema.methods.comparePassword = function(candidatePassword: string) {
     });
   });
 };
-
 schema.set('toObject', {
   transform: function(doc: {}, ret: any): void {
     delete ret.__v;
