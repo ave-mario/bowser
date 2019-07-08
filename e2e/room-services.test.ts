@@ -4,7 +4,6 @@ import server from '../src/app';
 import { RoomServices } from '../src/models';
 import { IRoomService } from 'interfaces';
 import getToken from './utils/employee.utils';
-
 const agent = request.agent(server);
 
 describe('Services of room routes', () => {
@@ -24,6 +23,7 @@ describe('Services of room routes', () => {
     address: `${faker.address.country()}, ${faker.address.city()}, ${faker.address.streetAddress()}`
   };
   beforeAll(async () => {
+    await RoomServices.deleteMany({});
     token = await getToken(agent, newEmployee, newPassword);
   });
 

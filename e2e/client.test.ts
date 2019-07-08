@@ -25,7 +25,7 @@ describe('Client routes', () => {
         email: faker.name.firstName(),
         phoneNumber: newClient.phoneNumber
       };
-      client.email = faker.name.firstName();
+      // client.email = faker.name.firstName();
       await agent
         .post('/api/clients/')
         .send(client)

@@ -23,6 +23,7 @@ describe('Rooms routes', () => {
     address: `${faker.address.country()}, ${faker.address.city()}, ${faker.address.streetAddress()}`
   };
   beforeAll(async () => {
+    await RoomServices.deleteMany({});
     token = await getToken(agent, newEmployee, newPassword);
     await createAdditions(agent, 2, token);
     additions = await RoomServices.find();
