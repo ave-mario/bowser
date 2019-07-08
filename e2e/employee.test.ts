@@ -9,6 +9,9 @@ import { logicErr } from '../src/errors';
 const agent = request.agent(server);
 
 describe('Employee routes', () => {
+  beforeAll(async () => {
+    await Employee.deleteMany({});
+  });
   let token = '';
   let identifiedToken: string;
   const newPassword = faker.internet.password();

@@ -9,6 +9,9 @@ import { logicErr } from '../src/errors';
 const agent = request.agent(server);
 
 describe('Client routes', () => {
+  beforeAll(async () => {
+    await Client.deleteMany({});
+  });
   let accessToken: string, refreshToken: string;
   const newClient: IClientFieldsToRegister = {
     name: faker.name.firstName(),
