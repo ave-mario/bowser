@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { config } from './environment';
 import seedingMongo from './seeds';
+import logger from './winston';
 const { app, mongo } = config;
 const options = {
   useNewUrlParser: true
@@ -14,28 +15,33 @@ export function initializeDb(callback: (mongo: any) => void): void {
   mongoose.set('useCreateIndex', true);
 
   mongoose.connection.on('connected', function(): void {
-    console.log('Mongoose default connection open to ' + mongo.host);
+    logger.info('Mongoose default connection open to ' + mongo.host);
   });
 
   mongoose.connection.on('error', function(err: Error): void {
-    console.log('Mongoose default connection error: ' + err);
+    logger.info('Mongoose default connection error: ' + err);
   });
 
   mongoose.connection.on('disconnected', function(): void {
-    console.log('Mongoose default connection disconnected');
+    logger.warn('Mongoose default connection disconnected');
   });
 
   mongoose
     .connect(mongo.host, options)
     .then(
       (): void => {
-        callback(mongoose);
+        seedingMongo();
       }
     )
     .then(
       (): void => {
-        seedingMongo();
+        callback(mongoose);
       }
     )
-    .catch((err): void => console.error(err.toString()));
+    .catch(
+      (err): any => {
+        logger.error(err.toString());
+        process.exit(1);
+      }
+    );
 }

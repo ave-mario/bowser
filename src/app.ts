@@ -1,13 +1,22 @@
 import express, { Response, Request, NextFunction } from 'express';
-import { initializeDb, Passport, initialize } from './config';
+import morgan from 'morgan';
+import { initializeDb, Passport, initialize, logger } from './config';
 import router from './routes';
-import logger from 'morgan';
+
 class App {
   public app: express.Application;
 
   public constructor() {
     this.app = express();
-    this.app.use(logger('dev'));
+    this.app.use(
+      morgan('tiny', {
+        stream: {
+          write: function(message: string, encoding?: string): void {
+            logger.info(message, encoding);
+          }
+        }
+      })
+    );
     this.configCors();
     this.config();
   }
