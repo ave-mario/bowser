@@ -35,6 +35,15 @@ class RoomController implements Controller {
         res.status(500).json({ success: false, message: err.message });
       });
   }
+
+  public remove(req: Request, res: Response): void {
+    service
+      .remove(req.params.id)
+      .then(() => res.status(200).json({ success: true }))
+      .catch(err => {
+        res.status(500).json({ success: false, message: err.message });
+      });
+  }
 }
 
 export default new RoomController();

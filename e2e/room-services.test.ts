@@ -4,6 +4,7 @@ import server from '../src/app';
 import { RoomServices } from '../src/models';
 import { IRoomService } from 'interfaces';
 import getToken from './utils/employee.utils';
+import getTokenClient from './utils/client.utils';
 
 const agent = request.agent(server);
 
@@ -97,6 +98,39 @@ describe('Services of room routes', () => {
         .set('Authorization', 'Bearer ' + token)
         .send(updateData)
         .expect(200);
+    });
+  });
+
+  describe('DELETE api/rooms-services/:id', () => {
+    let service: IRoomService;
+
+    beforeAll(async () => {
+      const services = await RoomServices.find();
+      service = services[0];
+    });
+
+    it('when is employee then room service deleted', async () => {
+      await agent
+        .delete('/api/rooms-services/' + service._id)
+        .set('Authorization', 'Bearer ' + token)
+        .expect(200)
+        .expect(res => {
+          expect(res.body.success).toBe(true);
+        });
+    });
+
+    it('when is client then response forbidden', async () => {
+      const newClient = {
+        name: faker.name.firstName(),
+        surname: faker.name.lastName(),
+        email: faker.internet.email(),
+        phoneNumber: faker.phone.phoneNumber('+375#########')
+      };
+      const tokenClient = await getTokenClient(agent, newClient);
+      await agent
+        .delete('/api/rooms-services/' + service._id)
+        .set('Authorization', 'Bearer ' + tokenClient)
+        .expect(403);
     });
   });
 });

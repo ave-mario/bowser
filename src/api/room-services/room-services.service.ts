@@ -24,7 +24,11 @@ class RoomsServices {
       page: parseInt(queries.page, 10) || 1,
       limit: parseInt(queries.perPage, 10) || 10
     };
-    const services = await RoomServices.paginate({}, options);
+
+    const query = {
+      isDeleted: false
+    };
+    const services = await RoomServices.paginate(query, options);
     return services;
   }
 
@@ -43,6 +47,19 @@ class RoomsServices {
         }
       );
       return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async remove(_id: string): Promise<void> {
+    try {
+      await RoomServices.updateOne(
+        { _id },
+        {
+          isDeleted: true
+        }
+      );
     } catch (err) {
       throw err;
     }
