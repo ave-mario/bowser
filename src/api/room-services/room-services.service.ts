@@ -4,13 +4,15 @@ import { technicalErr, logicErr } from '../../errors';
 import { PaginateResult } from 'mongoose';
 
 class RoomsServices {
-  public async create(data: IRoomService): Promise<Error> {
+  public async create(data: IRoomService): Promise<IRoomService | Error> {
     try {
-      await new RoomServices({
+      return await new RoomServices({
         ...data
-      }).save();
-    } catch (err) {
-      return new Error(logicErr.dataAlreadyExist);
+      })
+        .save()
+        .then(service => service);
+    } catch {
+      throw new Error(logicErr.dataAlreadyExist);
     }
   }
 
@@ -22,7 +24,11 @@ class RoomsServices {
       page: parseInt(queries.page, 10) || 1,
       limit: parseInt(queries.perPage, 10) || 10
     };
-    const services = await RoomServices.paginate({}, options);
+
+    const query = {
+      isDeleted: false
+    };
+    const services = await RoomServices.paginate(query, options);
     return services;
   }
 
@@ -41,6 +47,19 @@ class RoomsServices {
         }
       );
       return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async remove(_id: string): Promise<void> {
+    try {
+      await RoomServices.updateOne(
+        { _id },
+        {
+          isDeleted: true
+        }
+      );
     } catch (err) {
       throw err;
     }

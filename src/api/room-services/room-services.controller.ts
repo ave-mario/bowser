@@ -6,13 +6,9 @@ class RoomController implements Controller {
   public create(req: Request, res: Response): void {
     service
       .create(req.body)
-      .then(result =>
-        !result
-          ? res.status(201).json({ success: true })
-          : res.status(201).json({ success: false, message: result.message })
-      )
+      .then(result => res.status(201).json({ success: true, addition: result }))
       .catch(err => {
-        res.status(500).json({ success: false, message: err.message });
+        res.status(400).json({ success: false, message: err.message });
       });
   }
 
@@ -34,6 +30,15 @@ class RoomController implements Controller {
   public update(req: Request, res: Response): void {
     service
       .update(req.params.id, req.body)
+      .then(() => res.status(200).json({ success: true }))
+      .catch(err => {
+        res.status(500).json({ success: false, message: err.message });
+      });
+  }
+
+  public remove(req: Request, res: Response): void {
+    service
+      .remove(req.params.id)
       .then(() => res.status(200).json({ success: true }))
       .catch(err => {
         res.status(500).json({ success: false, message: err.message });

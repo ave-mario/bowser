@@ -1,12 +1,10 @@
-import { TechnicalErrCodes } from './errCode';
-
 export const technicalErr = {
   databaseCrash: {
-    code: TechnicalErrCodes.DatabaseCrash,
+    code: 500,
     msg: 'Database crashed'
   },
   emailServiceCrash: {
-    code: TechnicalErrCodes.EmailServiceCrash,
+    code: 500,
     msg: 'Email service crashed'
   }
 };

@@ -44,7 +44,7 @@ describe('Employee routes', () => {
       await agent
         .post('/api/employees/')
         .send(newEmployee)
-        .expect(400, {
+        .expect(409, {
           message: logicErr.userIsAlreadyRegistered.msg
         });
     });

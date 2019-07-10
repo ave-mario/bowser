@@ -1,27 +1,26 @@
-import { LogicErrCodes } from './errCode';
-
 export const logicErr = {
   userIsAlreadyRegistered: {
-    code: LogicErrCodes.UserIsAlreadyRegistered,
+    code: 409,
     msg: 'User is already registered'
   },
   incorrectDataToLogin: {
-    code: LogicErrCodes.IncorrectDataToLogin,
+    code: 401,
     msg: 'Email or password incorrect'
   },
   notFoundUser: {
-    code: LogicErrCodes.NotFoundUser,
+    code: 401,
     msg: 'Not found user'
   },
   wrongCodeToLogin: {
-    code: LogicErrCodes.WrongCodeToLogin,
+    code: 401,
     msg: 'Wrong code in login'
   },
   forbidden: {
-    msg: 'Forbidden'
+    msg: 'Forbidden',
+    code: 403
   },
   userBlocked: {
-    code: 400,
+    code: 404,
     msg: 'User is blocked'
   },
   wrongOldPassword: {
@@ -33,7 +32,7 @@ export const logicErr = {
     msg: 'Wrong new password'
   },
   dataAlreadyExist: {
-    code: 400,
+    code: 409,
     msg: 'Data already exist'
   }
 };

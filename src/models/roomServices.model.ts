@@ -11,6 +11,10 @@ const schema = new Schema({
   price: {
     type: Number,
     min: 0
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
   }
 });
 
