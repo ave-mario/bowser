@@ -49,7 +49,7 @@ describe('Client routes', () => {
       await agent
         .post('/api/clients/')
         .send(newClient)
-        .expect(400)
+        .expect(409)
         .expect(res => {
           expect(res.body).toHaveProperty('message', expect.any(String));
         });
@@ -110,7 +110,7 @@ describe('Client routes', () => {
   describe('POST /api/clients/login', () => {
     it('when the user entered incorrectly 4 entry codes then he is blocked', async () => {
       let message = logicErr.wrongCodeToLogin.msg;
-
+      let status = 401;
       const attempts: number[] = Array.from(
         { length: CountAttempt.loginClient + 1 },
         (x, i) => i
@@ -119,12 +119,13 @@ describe('Client routes', () => {
       for (let attempt of attempts) {
         if (attempt === CountAttempt.loginClient) {
           message = logicErr.userBlocked.msg;
+          status = 404;
         }
 
         await agent
           .post('/api/clients/login')
           .send(user)
-          .expect(400, { message });
+          .expect(status, { message });
       }
 
       const client = await Client.findOne({ phoneNumber: newClient.phoneNumber });
@@ -139,7 +140,7 @@ describe('Client routes', () => {
       await agent
         .post('/api/clients/code')
         .send({ phoneNumber: newClient.phoneNumber })
-        .expect(400, { message: logicErr.userBlocked.msg });
+        .expect(404, { message: logicErr.userBlocked.msg });
     });
   });
 
