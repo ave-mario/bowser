@@ -1,7 +1,7 @@
 import { Error, IRoomCreate, IRoom } from '../../interfaces';
 import { Room } from '../../models';
 import { StatusService } from '../../enums';
-import { technicalErr, logicErr } from '../../errors';
+import { logicErr } from '../../errors';
 import { PaginateResult } from 'mongoose';
 
 class RoomService {

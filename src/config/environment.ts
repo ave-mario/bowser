@@ -34,5 +34,9 @@ export const config = {
     host: envVars.EMAIL_SERVER_HOST,
     user: envVars.GMAIL_AUTH_USER,
     pass: envVars.GMAIL_AUTH_PASS
+  },
+  redis: {
+    host: envVars.REDIS_HOST,
+    port: envVars.REDIS_PORT
   }
 };

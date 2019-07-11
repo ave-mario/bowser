@@ -1,0 +1,29 @@
+version: '3'
+services:
+  api:
+    container_name: bowser-api
+    restart: always
+    build: .
+    expose:
+      - 6105
+    links:
+      - mongo
+      - redis
+    depends_on:
+      - mongo
+      - redis
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '100MB'
+        max-file: '5'
+  mongo:
+    container_name: bowser-mongo
+    image: 'mongo:latest'
+    expose:
+      - 27017
+  redis:
+    container_name: bowser-redis
+    image: 'redis:latest'
+    expose:
+      - 6379

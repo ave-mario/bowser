@@ -1,0 +1,8 @@
+.git
+node_modules/
+npm-debug/
+public/
+build/
+coverage/
+.github/
+logs/
