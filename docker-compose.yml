@@ -1,29 +1,29 @@
 version: '3'
 services:
   api:
-    container_name: bowser-api
+    container_name: bowser-api-main
+    image: furmanov/bowser
     restart: always
     build: .
-    expose:
-      - 6105
+    ports:
+      - '6105:6105'
     links:
       - mongo
       - redis
-    depends_on:
-      - mongo
-      - redis
-    logging:
-      driver: 'json-file'
-      options:
-        max-size: '100MB'
-        max-file: '5'
+    depends_on: 
+      [mongo,redis]
+    env_file:
+      - .env
+    environment:
+      - REDIS_PORT=redis://redis:6379
+      - MONGODB_HOST=mongodb://mongo:27017/hotel
   mongo:
     container_name: bowser-mongo
-    image: 'mongo:latest'
-    expose:
-      - 27017
+    image: 'mongo:4'
+    ports:
+      - '27017:27017'
   redis:
     container_name: bowser-redis
-    image: 'redis:latest'
-    expose:
-      - 6379
+    image: 'redis:5'
+    ports:
+      - '6379:6379'
