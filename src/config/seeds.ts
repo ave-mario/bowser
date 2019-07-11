@@ -1,6 +1,6 @@
-import { Employee } from '../models/employees.model';
+import { Employee } from '../models';
 import employeeSeeds from '../seeds/employee.seeds';
-import { config } from '../config/environment';
+import { config, logger } from '../config';
 
 export default async function(): Promise<Error | void> {
   const employeeCount = await Employee.countDocuments();
@@ -9,12 +9,9 @@ export default async function(): Promise<Error | void> {
       return Employee.remove(
         {},
         async (): Promise<void> => {
-          for (let seed of employeeSeeds) {
-            let newEmployee = new Employee(seed);
-            await newEmployee.save();
-          }
-          console.log('Employee seeded');
+          await Employee.create(employeeSeeds);
+          logger.info('Employee seeded');
         }
-      ).catch(err => console.log(err));
+      ).catch((err): any => logger.warn(err));
   }
 }

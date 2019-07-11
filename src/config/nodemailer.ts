@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { config } from '../config/environment';
+import logger from '../config/winston';
 
 export async function emailSend(
   email: string,
@@ -19,9 +20,9 @@ export async function emailSend(
 
     transporter.verify((error: Error, success: any) => {
       if (error) {
-        console.log(error);
+        logger.warn(error);
       } else {
-        console.log('Server is ready to take messages');
+        logger.info('Server is ready to take messages');
       }
     });
 
@@ -32,7 +33,7 @@ export async function emailSend(
       html: content
     };
     let info = await transporter.sendMail(HelperOptions);
-    console.log('sendEmail: ' + email);
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    logger.info('sendEmail: ' + email);
+    logger.info('Preview URL: %s', nodemailer.getTestMessageUrl(info));
   }
 }
