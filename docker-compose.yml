@@ -1,8 +1,8 @@
 version: '3'
 services:
   api:
-    container_name: bowser-api-main
-    image: furmanov/bowser
+    container_name: bowser-api
+    image: furmanov/bowser:1
     restart: always
     build: .
     ports:
@@ -10,13 +10,12 @@ services:
     links:
       - mongo
       - redis
-    depends_on: 
-      [mongo,redis]
     env_file:
       - .env
     environment:
-      - REDIS_PORT=redis://redis:6379
-      - MONGODB_HOST=mongodb://mongo:27017/hotel
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis
+      - MONGODB_HOST=mongodb://mongo:27017/hotel-docker
   mongo:
     container_name: bowser-mongo
     image: 'mongo:4'

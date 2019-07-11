@@ -1,20 +1,32 @@
 import redis from 'redis';
+import { promisify, inspect } from 'util';
 import { logger, config } from './';
-const { redis: redisConf, app } = config;
+const { redis: redisConf } = config;
 
-const client = redis.createClient(redisConf.port);
-connectToRedis();
-export function connectToRedis(): void {
-  if (app.environment === 'development') client.debug();
+const client = redis.createClient({
+  port: Number(redisConf.port),
+  host: redisConf.host
+});
+
+function listenConnect() {
   client.on('error', function(err) {
     logger.warn('Error: ' + err);
   });
 
   client.on('connect', function() {
-    logger.info('Redis: connected to the server');
+    logger.info(
+      'Redis: connected to the server, open to ' + redisConf.host + redisConf.port
+    );
   });
 
-  client.set('app:port', app.port);
+  client.on('monitor', function(time, args) {
+    console.log(time + ': ' + inspect(args));
+  });
 }
 
-export default client;
+const getAsync = promisify(client.get).bind(client);
+const setAsync = promisify(client.set).bind(client);
+const hgetAllAsync = promisify(client.hgetall).bind(client);
+const hmsetAsync = promisify(client.hmset).bind(client);
+
+export default { getAsync, hgetAllAsync, setAsync, hmsetAsync, listenConnect, client };
