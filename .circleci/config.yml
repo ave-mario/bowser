@@ -3,7 +3,7 @@ defaults: &defaults #working_directory: ./circleci
     - image: circleci/node:10
     - image: circleci/mongo:latest
     - image: circleci/redis:5
-    - image: docker:17.05.0-ce-git
+    - image: docker:18.09.2
       environment:
         REDIS_PORT: 6379
         REDIS_HOST: 127.0.0.1
