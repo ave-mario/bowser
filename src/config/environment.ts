@@ -36,7 +36,7 @@ export const config = {
     pass: envVars.GMAIL_AUTH_PASS
   },
   redis: {
-    host: envVars.REDIS_HOST,
-    port: envVars.REDIS_PORT
+    port: envVars.REDIS_PORT,
+    host: envVars.REDIS_HOST
   }
 };

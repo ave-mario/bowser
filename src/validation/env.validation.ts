@@ -13,8 +13,8 @@ export const schemaDev = object({
   EMAIL_SERVER_HOST: string().required(),
   GMAIL_AUTH_USER: string().required(),
   GMAIL_AUTH_PASS: string().required(),
-  REDIS_HOST: string().required(),
-  REDIS_PORT: number().required()
+  REDIS_PORT: number().required(),
+  REDIS_HOST: string().required()
 })
   .unknown()
   .required();
