@@ -29,4 +29,4 @@ const setAsync = promisify(client.set).bind(client);
 const hgetAllAsync = promisify(client.hgetall).bind(client);
 const hmsetAsync = promisify(client.hmset).bind(client);
 
-export default { getAsync, hgetAllAsync, setAsync, hmsetAsync, listenConnect, client };
+export default { getAsync, hgetAllAsync, setAsync, hmsetAsync, listenConnect };
