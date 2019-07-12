@@ -2,7 +2,7 @@ import request from 'supertest';
 import faker from 'faker';
 import server from '../src/app';
 import { Room, RoomServices } from '../src/models';
-import { IRoomCreate, IRoomService, IRoom } from 'interfaces';
+import { IRoomCreate, IRoomService } from 'interfaces';
 import getToken from './utils/employee.utils';
 import createAdditions from './utils/additions.utils';
 import { StatusService } from '../src/enums/status.enums';

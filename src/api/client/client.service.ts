@@ -15,8 +15,6 @@ import { logicErr, technicalErr } from '../../errors';
 import { JsonTokens } from '../../config';
 import { Roles, StatusUsers, CountAttempt } from '../../enums';
 import { Transport } from '../../utils';
-import { config } from '../../config/environment';
-import { date } from 'joi';
 
 class ClientService implements IUserService {
   private _transporter: Transport = new Transport(new EmailService());

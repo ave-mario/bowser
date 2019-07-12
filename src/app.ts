@@ -1,8 +1,7 @@
 import express, { Response, Request, NextFunction } from 'express';
 import morgan from 'morgan';
-import { initializeDb, Passport, initialize, logger } from './config';
+import { initializeDb, Passport, initialize, logger, redisClient } from './config';
 import router from './routes';
-
 class App {
   public app: express.Application;
 
@@ -27,7 +26,11 @@ class App {
     this.app.use(initialize());
     Passport.jwtStrategy();
     this.app.use('/api/', router);
-    initializeDb((): void => {});
+    initializeDb(
+      (): void => {
+        redisClient.listenConnect();
+      }
+    );
   }
 
   private configCors(): void {
