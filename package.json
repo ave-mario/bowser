@@ -12,8 +12,8 @@
     "docker:compose": "docker-compose up",
     "docker:run": "docker start $(docker ps -a -q -f status=exited)",
     "docker:show": "docker container ls --all",
-    "docker:stop": "docker container stop $(docker container ls -aq)",
-    "docker:remove": "docker container prune",
+    "docker:stop": "docker stop api-redis",
+    "docker:remove": "docker rm api-redis",
     "redis": "docker run -p 6379:6379 --name api-redis -d redis:5",
     "e2e": "npm run redis && cross-env NODE_ENV=test jest --forceExit --verbose",
     "e2e:watch": "jest --watch",
@@ -88,8 +88,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run e2e && lint-staged",
-      "pre-push": "npm run e2e",
+      "pre-commit": "npm run docker:stop & npm run docker:remove & npm run e2e && lint-staged",
+      "pre-push": "npm run docker:stop & npm run docker:remove & npm run e2e",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
