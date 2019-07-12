@@ -1,20 +1,21 @@
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
-import { redisClient, logger } from '../config';
+import { ISaver } from '../interfaces';
+import { ClientRedis } from '../enums';
+export default class Cash {
+  private _saver: ISaver;
 
-class ServiceRedis {
-  getValue(name: string): string {
-    const value = redisClient.getAsync(name);
-    logger.info(value);
-    return value;
+  public constructor(saver: ISaver) {
+    this._saver = saver;
   }
 
-  setValue(name: string, value: string): void {
-    redisClient.setAsync(name, value);
+  public saveCode(phone: string, code: number) {
+    this._saver.setHmset(ClientRedis.LoginCode, phone, code.toString());
   }
 
-  setValueWithExpire(name: string, value: string, timestamp: number): void {
-    redisClient.setAsync(name, value, 'EX', timestamp);
+  public getCode(phone: string): string {
+    return this._saver.getHmsetValue(ClientRedis.LoginCode, phone);
+  }
+
+  public deleteCode(phone: string): void {
+    this._saver.deleteHsetValue(ClientRedis.LoginCode, phone);
   }
 }
-
-export default new ServiceRedis();

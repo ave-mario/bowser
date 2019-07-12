@@ -1,4 +1,4 @@
-import { object, number, string } from 'joi';
+import { object, number, string, bool } from 'joi';
 
 export const schemaDev = object({
   NODE_ENV: string()

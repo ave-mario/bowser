@@ -1,2 +1,2 @@
 export * from './transporter.service';
-export { default as RedisService } from './redis.service';
+export { default as Cash } from './redis.service';

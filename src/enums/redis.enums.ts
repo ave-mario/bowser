@@ -4,5 +4,5 @@ export enum TokensNames {
 }
 
 export enum ClientRedis {
-  LoginCode = 'login-code:'
+  LoginCode = 'login-code'
 }

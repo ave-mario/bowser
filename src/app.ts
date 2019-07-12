@@ -1,21 +1,30 @@
 import express, { Response, Request, NextFunction } from 'express';
 import morgan from 'morgan';
-import { initializeDb, Passport, initialize, logger, redisClient } from './config';
+import {
+  initializeDb,
+  Passport,
+  initialize,
+  logger,
+  redisClient,
+  config
+} from './config';
 import router from './routes';
 class App {
   public app: express.Application;
 
   public constructor() {
     this.app = express();
-    this.app.use(
-      morgan('tiny', {
-        stream: {
-          write: function(message: string, encoding?: string): void {
-            logger.info(message, encoding);
+    if (config.app.environment !== 'test') {
+      this.app.use(
+        morgan('tiny', {
+          stream: {
+            write: function(message: string, encoding?: string): void {
+              logger.info(message, encoding);
+            }
           }
-        }
-      })
-    );
+        })
+      );
+    }
     this.configCors();
     this.config();
   }
@@ -27,8 +36,8 @@ class App {
     Passport.jwtStrategy();
     this.app.use('/api/', router);
     initializeDb(
-      (): void => {
-        redisClient.listenConnect();
+      async (): Promise<void> => {
+        await redisClient.listenConnect();
       }
     );
   }
