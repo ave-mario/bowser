@@ -73,7 +73,13 @@ jobs:
           name: Run Unit Tests
           command: npm run test
   e2e:
-    <<: *defaults
+    docker:
+    - image: circleci/node:10
+    - image: circleci/mongo:latest
+    - image: circleci/redis:5
+      environment:
+        REDIS_PORT: 6379
+        REDIS_HOST: 127.0.0.1
     steps:
       - checkout
       - attach_workspace:
@@ -98,3 +104,4 @@ workflows:
       - e2e:
           requires:
             - lint
+
