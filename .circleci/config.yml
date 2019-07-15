@@ -23,7 +23,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Update NPM
-          command: 'sudo npm install -g npm@latest'
+          command: 'npm install -g npm@latest'
       - restore_cache:
           name: Restore NPM Package Cache
           keys:
