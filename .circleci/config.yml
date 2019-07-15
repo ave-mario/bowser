@@ -1,9 +1,9 @@
 defaults: &defaults #working_directory: ./circleci
   docker:
+    - image: docker:18.09-git
     - image: circleci/node:10
     - image: circleci/mongo:latest
     - image: circleci/redis:5
-    - image: docker:18.09-git
       environment:
         REDIS_PORT: 6379
         REDIS_HOST: 127.0.0.1
@@ -16,9 +16,6 @@ jobs:
       - attach_workspace:
           at: .
       - setup_remote_docker
-      - run:
-          name: Run Docker
-          command: 'sudo docker run -p 6379:6379 --name api-redis -d redis:5'
   prepare:
     <<: *defaults
     steps:
