@@ -88,7 +88,7 @@ workflows:
   build_accept_deploy:
     jobs:
       - docker
-      - prepare
+      - prepare:
           requires:
             - docker
       - lint:
