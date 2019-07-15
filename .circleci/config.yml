@@ -8,16 +8,6 @@ defaults: &defaults #working_directory: ./circleci
         REDIS_HOST: 127.0.0.1
 version: 2
 jobs:
-  docker:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - setup_remote_docker
-      - run:
-          name: Attach Docker
-          command: 'sudo systemctl enable docker'
   prepare:
     <<: *defaults
     steps:
