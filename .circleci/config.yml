@@ -71,6 +71,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Run Docker
+          command: 'sudo docker run -p 6379:6379 --name api-redis -d redis:5'
+      - run:
           name: Run End-to-End Tests
           command: npm run e2e
 workflows:
