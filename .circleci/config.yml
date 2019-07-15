@@ -15,9 +15,9 @@ jobs:
       - attach_workspace:
           at: .
       - setup_remote_docker
-      -run:
-         name: Attach Docker
-         command: 'sudo systemctl start docker'
+      - run:
+          name: Attach Docker
+          command: 'sudo systemctl start docker'
   prepare:
     <<: *defaults
     steps:
@@ -85,10 +85,7 @@ workflows:
   version: 2
   build_accept_deploy:
     jobs:
-      - docker
-      - prepare:
-          requires:
-            - docker
+      - prepare
       - lint:
           requires:
             - prepare
