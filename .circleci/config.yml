@@ -80,7 +80,7 @@ jobs:
           at: .
       - run:
           name: Run End-to-End Tests
-          command: npm run e2e
+          command: npm run e2e:docker
 workflows:
   version: 2
   build_accept_deploy:
