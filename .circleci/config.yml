@@ -1,6 +1,5 @@
 defaults: &defaults #working_directory: ./circleci
   docker:
-    - image: docker:18.09-git
     - image: circleci/node:10
     - image: circleci/mongo:latest
     - image: circleci/redis:5
@@ -20,10 +19,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: Update NPM
-          command: 'npm install -g npm@latest'
+          command: 'sudo npm install -g npm@latest'
       - restore_cache:
           name: Restore NPM Package Cache
           keys:
