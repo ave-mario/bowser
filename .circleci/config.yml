@@ -13,8 +13,11 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: .
+         at: .
       - setup_remote_docker
+      -run:
+         name: Attach Docker
+         command: 'sudo systemctl start docker'
   prepare:
     <<: *defaults
     steps:
