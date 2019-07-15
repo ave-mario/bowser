@@ -17,7 +17,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Attach Docker
-          command: 'sudo systemctl start docker'
+          command: 'sudo systemctl enable docker'
   prepare:
     <<: *defaults
     steps:
