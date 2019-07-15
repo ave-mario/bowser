@@ -31,12 +31,12 @@ const schema: Schema = new Schema(
       required: true,
       default: StatusUsers.Active
     },
-    loginCode: {
-      type: Number,
-      min: 100000,
-      max: 1000000,
-      select: false
-    },
+    // loginCode: {
+    //   type: Number,
+    //   min: 100000,
+    //   max: 1000000,
+    //   select: false
+    // },
     attemptLogin: {
       type: Number,
       default: 0,

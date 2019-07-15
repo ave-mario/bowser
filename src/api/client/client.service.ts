@@ -32,8 +32,7 @@ class ClientService implements IUserService {
         name: data.name,
         surname: data.surname,
         email: data.email,
-        phoneNumber: data.phoneNumber,
-        loginCode
+        phoneNumber: data.phoneNumber
       });
       await newClient.save().then(async doc => {
         await this._serviceCash.saveCode(doc.phoneNumber, loginCode);
@@ -49,9 +48,7 @@ class ClientService implements IUserService {
     try {
       const client = await Client.findOne({
         phoneNumber: data.phoneNumber
-      })
-        .select('+loginCode')
-        .exec();
+      });
       if (!client) return new Error(logicErr.notFoundUser);
       if (client.status === StatusUsers.Blocking) return new Error(logicErr.userBlocked);
       try {
@@ -90,13 +87,11 @@ class ClientService implements IUserService {
         client.attemptLogin = 0;
         client.status = StatusUsers.Blocking;
         await this._serviceCash.deleteCode(client.phoneNumber);
-        client.loginCode = undefined;
         error = logicErr.userBlocked;
       }
     } else {
       client.attemptLogin = 0;
       await this._serviceCash.deleteCode(client.phoneNumber);
-      client.loginCode = undefined;
     }
     await client.save();
     if (error) throw new Error(error);
@@ -106,17 +101,12 @@ class ClientService implements IUserService {
     try {
       const client = await Client.findOne({
         $or: [{ phoneNumber: identify }, { email: identify }]
-      })
-        .select('+loginCode')
-        .exec();
+      });
       if (!client) return new Error(logicErr.notFoundUser);
       if (client.status === StatusUsers.Blocking) return new Error(logicErr.userBlocked);
       const code = faker.random.number({ min: 100000, max: 1000000 });
-      client.loginCode = code;
-      await client.save(async () => {
-        await this._serviceCash.saveCode(client.phoneNumber, code);
-        await this._transporter.sendCode(client.email, code);
-      });
+      await this._serviceCash.saveCode(client.phoneNumber, code);
+      await this._transporter.sendCode(client.email, code);
     } catch (error) {
       return new Error(technicalErr.databaseCrash);
     }

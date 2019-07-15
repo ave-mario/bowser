@@ -1,9 +1,9 @@
 import request from 'supertest';
 import faker from 'faker';
 import server from '../src/app';
-import { IClientFieldsToRegister, IClientToLogin } from '../src/interfaces';
+import { IClientFieldsToRegister, IClientToLogin, RedisService } from '../src/interfaces';
 import { Client } from '../src/models';
-import { StatusUsers, CountAttempt } from '../src/enums';
+import { StatusUsers, CountAttempt, ClientRedis } from '../src/enums';
 import { logicErr } from '../src/errors';
 
 const agent = request.agent(server);
@@ -20,6 +20,7 @@ describe('Client routes', () => {
     phoneNumber: faker.phone.phoneNumber('+375#########')
   };
 
+  const redis = new RedisService();
   describe('POST /api/clients', () => {
     it("When email is wrong then service don't to add new client", async () => {
       const client = {
@@ -67,10 +68,11 @@ describe('Client routes', () => {
   };
   describe('POST /api/clients/login', () => {
     it('when client with phone is exist then the response have tokens and own user', async () => {
-      const data = await Client.findOne({ phoneNumber: newClient.phoneNumber })
-        .select('loginCode')
-        .exec();
-      user.loginCode = data.loginCode;
+      const code = await redis.getHmsetValue(
+        ClientRedis.LoginCode,
+        newClient.phoneNumber
+      );
+      user.loginCode = Number(code);
       const res = await agent
         .post('/api/clients/login')
         .send(user)

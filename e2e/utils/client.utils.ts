@@ -1,6 +1,12 @@
 import { Client } from '../../src/models';
-import { IClientFieldsToRegister, IClient, IClientToLogin } from 'interfaces';
+import {
+  IClientFieldsToRegister,
+  IClient,
+  IClientToLogin,
+  RedisService
+} from '../../src/interfaces';
 import request from 'supertest';
+import { ClientRedis } from '../../src/enums';
 
 export default async function getTokenOfClient(
   agent: request.SuperTest<request.Test>,
@@ -8,9 +14,11 @@ export default async function getTokenOfClient(
 ): Promise<string> {
   const user = await createClient(agent, newClient);
 
+  const redis = new RedisService();
+  const code = await redis.getHmsetValue(ClientRedis.LoginCode, user.phoneNumber);
   const token = await loginClient(agent, {
     phoneNumber: user.phoneNumber,
-    loginCode: user.loginCode
+    loginCode: Number(code)
   });
 
   return token;
@@ -22,11 +30,7 @@ async function createClient(
 ): Promise<IClient> {
   await agent.post('/api/clients').send(newClient);
 
-  const user = await Client.findOne({ phoneNumber: newClient.phoneNumber })
-    .select('+loginCode')
-    .exec();
-
-  return user;
+  return await Client.findOne({ phoneNumber: newClient.phoneNumber });
 }
 
 async function loginClient(
