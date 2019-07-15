@@ -83,7 +83,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: .
+          at: ./circleci
       - run:
           name: Run End-to-End Tests
           command: npm run e2e:docker
