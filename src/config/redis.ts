@@ -21,7 +21,7 @@ export default class ConfigRedis {
     });
 
     this._client.on('monitor', function(time, args) {
-      console.log(time + ': ' + inspect(args));
+      logger.info(time + ': ' + inspect(args));
     });
   }
 
@@ -31,9 +31,24 @@ export default class ConfigRedis {
   public static hgetAllAsync = promisify(ConfigRedis._client.hgetall).bind(
     ConfigRedis._client
   );
+  public static delAsync = promisify(ConfigRedis._client.del).bind(ConfigRedis._client);
+
   public static hgetAsync = promisify(ConfigRedis._client.hget).bind(ConfigRedis._client);
   public static hsetAsync = promisify(ConfigRedis._client.hset).bind(ConfigRedis._client);
-  public static hdelAsync = promisify(ConfigRedis._client.hdel).bind(ConfigRedis._client);
+  public static hdetAsync = promisify(ConfigRedis._client.hdel).bind(ConfigRedis._client);
+
+  public static hmgetAsync = promisify(ConfigRedis._client.hmget).bind(
+    ConfigRedis._client
+  );
+  public static hmsetAsync = promisify(ConfigRedis._client.hmset).bind(
+    ConfigRedis._client
+  );
+  public static hkeysAsync = promisify(ConfigRedis._client.hkeys).bind(
+    ConfigRedis._client
+  );
+  public static hvalsAsync = promisify(ConfigRedis._client.hvals).bind(
+    ConfigRedis._client
+  );
 
   public static exireAsync = promisify(ConfigRedis._client.expire).bind(
     ConfigRedis._client

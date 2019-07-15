@@ -3,7 +3,7 @@ import faker from 'faker';
 import server from '../src/app';
 import { IClientFieldsToRegister, IClientToLogin, RedisService } from '../src/interfaces';
 import { Client } from '../src/models';
-import { StatusUsers, CountAttempt, ClientRedis } from '../src/enums';
+import { StatusUsers, CountAttempt } from '../src/enums';
 import { logicErr } from '../src/errors';
 
 const agent = request.agent(server);
@@ -68,10 +68,7 @@ describe('Client routes', () => {
   };
   describe('POST /api/clients/login', () => {
     it('when client with phone is exist then the response have tokens and own user', async () => {
-      const code = await redis.getHmsetValue(
-        ClientRedis.LoginCode,
-        newClient.phoneNumber
-      );
+      const code = await redis.getValue(newClient.phoneNumber);
       user.loginCode = Number(code);
       const res = await agent
         .post('/api/clients/login')

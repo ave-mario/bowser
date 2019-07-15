@@ -13,9 +13,8 @@ import {
   RedisService
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
-import { JsonTokens } from '../../config';
 import { Roles, StatusUsers, CountAttempt } from '../../enums';
-import { Transport, Cash } from '../../utils';
+import { Transport, Cash, JsonTokens } from '../../utils';
 
 class ClientService implements IUserService {
   private _transporter: Transport = new Transport(new EmailService());

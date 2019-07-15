@@ -1,8 +1,12 @@
 import request from 'supertest';
 import faker from 'faker';
 import server from '../src/app';
-import { IEmployeeToLogin, IEmployeeFieldsToRegister } from '../src/interfaces';
-import { Employee, IdentifiedToken } from '../src/models';
+import {
+  IEmployeeToLogin,
+  IEmployeeFieldsToRegister,
+  SaveTokenToRedis
+} from '../src/interfaces';
+import { Employee } from '../src/models';
 import { StatusUsers } from '../src/enums';
 import { logicErr } from '../src/errors';
 
@@ -14,6 +18,7 @@ describe('Employee routes', () => {
   });
   let token = '';
   let identifiedToken: string;
+  const redis = new SaveTokenToRedis();
   const newPassword = faker.internet.password();
   const newEmployee: IEmployeeFieldsToRegister = {
     name: faker.name.firstName(),
@@ -35,9 +40,7 @@ describe('Employee routes', () => {
         .exec();
       expect(user.status).toBe(StatusUsers.NeedChangePassword);
 
-      identifiedToken = await IdentifiedToken.findOne({ userId: user._id }).then(
-        ({ token }) => token
-      );
+      identifiedToken = await redis.findIdentified(user._id);
     });
 
     it('when email or phone is already registered then error add', async () => {

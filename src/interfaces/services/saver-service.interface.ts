@@ -1,18 +1,14 @@
 export interface ISaver {
-  setHmset(
-    category: string,
-    speciesName: string,
-    speciesSound: string,
-    timestamp?: number
-  ): void;
+  setHmset(category: string, values: string[], timestamp?: number): void;
 
   getValue(name: string): string;
 
-  setValue(name: string, value: string): void;
+  setValue(name: string, value: string, timestamp?: number): void;
 
-  setValueWithExpire(name: string, value: string, timestamp: number): void;
-
-  getHmsetValue(category: string, speciesName: string): string;
+  getHsetValue(category: string, speciesName: string): string;
+  getHAllValue(category: string): any;
 
   deleteHsetValue(category: string, speciesName: string): void;
+
+  deleteValue(speciesName: string): void;
 }

@@ -1,5 +1,5 @@
 import { ITokens } from '../../interfaces';
-import { JsonTokens } from '../../config';
+import { JsonTokens } from '../../utils';
 import { config } from '../../config/environment';
 import { IUserResponseRefreshTokens } from '../../interfaces/models/user.interface';
 class AuthService {
@@ -15,6 +15,10 @@ class AuthService {
     } catch (err) {
       throw err;
     }
+  }
+
+  public async logout(userId: string): Promise<void> {
+    await JsonTokens.deleteTokens(userId);
   }
 }
 

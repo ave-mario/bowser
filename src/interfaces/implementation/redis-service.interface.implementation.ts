@@ -2,13 +2,11 @@ import { ISaver } from '../services';
 import { redisClient } from '../../config';
 
 export class RedisService implements ISaver {
-  public setHmset(
-    category: string,
-    speciesName: string,
-    speciesSound: string,
-    timestamp?: number
-  ) {
-    redisClient.hsetAsync(category, speciesName, speciesSound);
+  public setHmset(category: string, values: string[], timestamp?: number) {
+    redisClient.hmsetAsync(category, ...values);
+    if (timestamp) {
+      redisClient.exireAsync(category, timestamp);
+    }
   }
 
   public getValue(name: string): string {
@@ -16,20 +14,26 @@ export class RedisService implements ISaver {
     return value;
   }
 
-  public setValue(name: string, value: string): void {
+  public setValue(name: string, value: string, timestamp?: number): void {
     redisClient.setAsync(name, value);
+    if (timestamp) {
+      redisClient.exireAsync(name, timestamp);
+    }
   }
 
-  public setValueWithExpire(name: string, value: string, timestamp: number): void {
-    redisClient.setAsync(name, value, 'EX', timestamp);
+  public getHsetValue(category: string, speciesName: string): string {
+    return redisClient.hgetAsync(category, speciesName);
   }
 
-  public getHmsetValue(category: string, speciesName: string): string {
-    const value = redisClient.hgetAsync(category, speciesName);
-    return value;
+  public getHAllValue(category: string): any {
+    return redisClient.hgetAllAsync(category);
   }
 
   public deleteHsetValue(category: string, speciesName: string): void {
-    redisClient.hdelAsync(category, speciesName);
+    redisClient.hdetAsync(category, speciesName);
+  }
+
+  public deleteValue(speciesName: string): void {
+    redisClient.delAsync(speciesName);
   }
 }

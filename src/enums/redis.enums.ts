@@ -1,8 +1,5 @@
 export enum TokensNames {
-  Refresh = 'refresh-token:',
-  Identified = 'identifiedToken-user:'
-}
-
-export enum ClientRedis {
-  LoginCode = 'login-code'
+  Refresh = 'refresh-token',
+  Identified = 'identified-token',
+  Access = 'access-token'
 }

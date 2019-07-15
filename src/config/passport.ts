@@ -1,11 +1,13 @@
 import passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Roles } from '../enums';
+import { Roles, TokensNames } from '../enums';
 import { config } from './environment';
-import { Client, Employee, Token, IdentifiedToken } from '../models';
-import { IClient, IEmployee } from '../interfaces';
+import { Client, Employee } from '../models';
+import { IClient, IEmployee, ISaveTokens, SaveTokenToRedis } from '../interfaces';
 
 export class Passport {
+  private static Token: ISaveTokens = new SaveTokenToRedis();
+
   public static jwtStrategy(): void {
     let option = {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -21,7 +23,7 @@ export class Passport {
           done: (error: any, user?: IEmployee | IClient, info?: string) => void
         ) => {
           let userId;
-          const tokenRefresh = await Token.findOne({ tokenId: token.id });
+          const tokenRefresh = await this.Token.findUser(token.id, TokensNames.Refresh);
           if (!tokenRefresh) {
             return done(null);
           }
@@ -41,10 +43,10 @@ export class Passport {
       new Strategy(
         option,
         async (token: any, done: (error: any, user?: IEmployee | boolean) => void) => {
-          const identified = await IdentifiedToken.findOne({ userId: token.id });
+          const identified = await this.Token.findIdentified(token.id);
           let user = null;
           if (identified) {
-            user = await Employee.findById(identified.userId);
+            user = await Employee.findById(token.id);
           }
           if (user) {
             return done(null, user);

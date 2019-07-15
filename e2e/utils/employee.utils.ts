@@ -1,13 +1,18 @@
-import { Employee, IdentifiedToken } from '../../src/models';
-import { IEmployeeFieldsToRegister } from 'interfaces';
 import request from 'supertest';
+import { Employee } from '../../src/models';
+import {
+  IEmployeeFieldsToRegister,
+  SaveTokenToRedis,
+  ISaveTokens
+} from '../../src/interfaces';
 
 export default async function getTokenOfEmployee(
   agent: request.SuperTest<request.Test>,
   newEmployee: IEmployeeFieldsToRegister,
   newPassword: string
 ): Promise<string> {
-  const identifiedToken = await createEmployee(agent, newEmployee);
+  const redis = new SaveTokenToRedis();
+  const identifiedToken = await createEmployee(agent, newEmployee, redis);
 
   const token = await changePasswordEmployee(
     agent,
@@ -21,15 +26,12 @@ export default async function getTokenOfEmployee(
 
 async function createEmployee(
   agent: request.SuperTest<request.Test>,
-  newEmployee: IEmployeeFieldsToRegister
+  newEmployee: IEmployeeFieldsToRegister,
+  redis: ISaveTokens
 ): Promise<string> {
   await agent.post('/api/employees').send(newEmployee);
-  const user = await Employee.findOne({ email: newEmployee.email })
-    .select('+identifiedToken')
-    .exec();
-  let identifiedToken = await IdentifiedToken.findOne({
-    userId: user._id
-  }).then(({ token }) => token);
+  const user = await Employee.findOne({ email: newEmployee.email });
+  let identifiedToken = await redis.findIdentified(user._id);
 
   return identifiedToken;
 }

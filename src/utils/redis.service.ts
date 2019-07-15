@@ -1,5 +1,4 @@
 import { ISaver } from '../interfaces';
-import { ClientRedis } from '../enums';
 export default class Cash {
   private _saver: ISaver;
 
@@ -8,14 +7,14 @@ export default class Cash {
   }
 
   public saveCode(phone: string, code: number) {
-    this._saver.setHmset(ClientRedis.LoginCode, phone, code.toString());
+    this._saver.setValue(phone, code.toString(), 300);
   }
 
   public getCode(phone: string): string {
-    return this._saver.getHmsetValue(ClientRedis.LoginCode, phone);
+    return this._saver.getValue(phone);
   }
 
   public deleteCode(phone: string): void {
-    this._saver.deleteHsetValue(ClientRedis.LoginCode, phone);
+    this._saver.deleteValue(phone);
   }
 }

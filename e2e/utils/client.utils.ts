@@ -1,12 +1,11 @@
 import { Client } from '../../src/models';
+import request from 'supertest';
 import {
   IClientFieldsToRegister,
   IClient,
   IClientToLogin,
   RedisService
 } from '../../src/interfaces';
-import request from 'supertest';
-import { ClientRedis } from '../../src/enums';
 
 export default async function getTokenOfClient(
   agent: request.SuperTest<request.Test>,
@@ -15,7 +14,7 @@ export default async function getTokenOfClient(
   const user = await createClient(agent, newClient);
 
   const redis = new RedisService();
-  const code = await redis.getHmsetValue(ClientRedis.LoginCode, user.phoneNumber);
+  const code = await redis.getValue(user.phoneNumber);
   const token = await loginClient(agent, {
     phoneNumber: user.phoneNumber,
     loginCode: Number(code)
