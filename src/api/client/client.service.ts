@@ -9,17 +9,16 @@ import {
   IUserService,
   IUser,
   ITokens,
-  EmailService
+  EmailService,
+  RedisService
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
-import { JsonTokens } from '../../config';
 import { Roles, StatusUsers, CountAttempt } from '../../enums';
-import { Transport } from '../../utils';
-import { config } from '../../config/environment';
-import { date } from 'joi';
+import { Transport, Cash, JsonTokens } from '../../utils';
 
 class ClientService implements IUserService {
   private _transporter: Transport = new Transport(new EmailService());
+  private _serviceCash: Cash = new Cash(new RedisService());
 
   public async register(data: IClientFieldsToRegister): Promise<Error | void> {
     try {
@@ -32,11 +31,12 @@ class ClientService implements IUserService {
         name: data.name,
         surname: data.surname,
         email: data.email,
-        phoneNumber: data.phoneNumber,
-        loginCode
+        phoneNumber: data.phoneNumber
       });
-      this._transporter.sendCode(newClient.email, loginCode);
-      await newClient.save();
+      await newClient.save().then(async doc => {
+        await this._serviceCash.saveCode(doc.phoneNumber, loginCode);
+        await this._transporter.sendCode(newClient.email, loginCode);
+      });
     } catch (error) {
       if (error.code === logicErr.wrongCodeToLogin.code) return error;
       return new Error(technicalErr.databaseCrash);
@@ -47,13 +47,12 @@ class ClientService implements IUserService {
     try {
       const client = await Client.findOne({
         phoneNumber: data.phoneNumber
-      })
-        .select('+loginCode')
-        .exec();
+      });
       if (!client) return new Error(logicErr.notFoundUser);
       if (client.status === StatusUsers.Blocking) return new Error(logicErr.userBlocked);
       try {
-        await this.checkLoginCode(client, data.loginCode);
+        const code = await this._serviceCash.getCode(data.phoneNumber);
+        await this.checkLoginCode(client, data.loginCode, Number(code));
       } catch (err) {
         return err;
       }
@@ -73,21 +72,25 @@ class ClientService implements IUserService {
     }
   }
 
-  private async checkLoginCode(client: IClient, loginCode: number): Promise<void> {
+  private async checkLoginCode(
+    client: IClient,
+    loginCode: number,
+    code: number
+  ): Promise<void> {
     let error;
-    if (client.loginCode != loginCode) {
+    if (code != loginCode) {
       if (client.attemptLogin < CountAttempt.loginClient) {
         client.attemptLogin = client.attemptLogin + 1;
         error = logicErr.wrongCodeToLogin;
       } else {
         client.attemptLogin = 0;
         client.status = StatusUsers.Blocking;
-        client.loginCode = undefined;
+        await this._serviceCash.deleteCode(client.phoneNumber);
         error = logicErr.userBlocked;
       }
     } else {
       client.attemptLogin = 0;
-      client.loginCode = undefined;
+      await this._serviceCash.deleteCode(client.phoneNumber);
     }
     await client.save();
     if (error) throw new Error(error);
@@ -97,15 +100,12 @@ class ClientService implements IUserService {
     try {
       const client = await Client.findOne({
         $or: [{ phoneNumber: identify }, { email: identify }]
-      })
-        .select('+loginCode')
-        .exec();
+      });
       if (!client) return new Error(logicErr.notFoundUser);
       if (client.status === StatusUsers.Blocking) return new Error(logicErr.userBlocked);
       const code = faker.random.number({ min: 100000, max: 1000000 });
-      this._transporter.sendCode(client.email, code);
-      client.loginCode = code;
-      await client.save();
+      await this._serviceCash.saveCode(client.phoneNumber, code);
+      await this._transporter.sendCode(client.email, code);
     } catch (error) {
       return new Error(technicalErr.databaseCrash);
     }

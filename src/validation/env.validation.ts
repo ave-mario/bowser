@@ -1,4 +1,4 @@
-import { object, number, string } from 'joi';
+import { object, number, string, bool } from 'joi';
 
 export const schemaDev = object({
   NODE_ENV: string()
@@ -12,7 +12,9 @@ export const schemaDev = object({
   MONGODB_HOST: string().required(),
   EMAIL_SERVER_HOST: string().required(),
   GMAIL_AUTH_USER: string().required(),
-  GMAIL_AUTH_PASS: string().required()
+  GMAIL_AUTH_PASS: string().required(),
+  REDIS_PORT: number().required(),
+  REDIS_HOST: string().required()
 })
   .unknown()
   .required();

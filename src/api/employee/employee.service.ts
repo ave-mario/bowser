@@ -11,11 +11,9 @@ import {
   EmailService
 } from '../../interfaces';
 import { logicErr, technicalErr } from '../../errors';
-import { JsonTokens } from '../../config';
 import { Roles, StatusUsers } from '../../enums';
-import { Transport } from '../../utils';
+import { Transport, JsonTokens } from '../../utils';
 import { config } from '../../config/environment';
-import { date } from 'joi';
 class EmployeeService implements IUserService {
   private _transporter: Transport = new Transport(new EmailService());
 
@@ -69,6 +67,7 @@ class EmployeeService implements IUserService {
       if (!success) return new Error(logicErr.incorrectDataToLogin);
 
       const clientObj = employee.toObject();
+      await JsonTokens.deleteIdentifiedToken(clientObj._id);
       const tokens: ITokens = JsonTokens.generationTokens(clientObj._id, Roles.Employee);
       let dateNow: Date = new Date();
       dateNow.setSeconds(dateNow.getSeconds() + config.jwt.accessExpiration);

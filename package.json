@@ -8,8 +8,12 @@
     "lint": "eslint ./src -c .eslintrc.json --ext ts,tsx,json,js",
     "lint:fix": "eslint ./src -c .eslintrc.json --fix --ext ts,tsx,json,js",
     "prettier": "prettier --write \"*.{js,jsx,ts,tsx,json}\"",
-    "start": "nodemon ./src/server.ts",
-    "e2e": "cross-env NODE_ENV=test jest --forceExit --verbose",
+    "start": "redis.sh && nodemon ./src/server.ts",
+    "docker:compose": "docker-compose up",
+    "docker:show": "docker container ls --all",
+    "docker:remove": "docker container prune",
+    "e2e": "redis.sh && cross-env NODE_ENV=test jest --forceExit --verbose",
+    "e2e:docker": "docker run -p 6379:6379 --name api-redis -d redis:5 && cross-env NODE_ENV=test jest --forceExit --verbose",
     "e2e:watch": "jest --watch",
     "e2e:coverage": "npm run lint && npm run e2e --coverage --no-cache"
   },
@@ -38,6 +42,7 @@
     "nodemailer": "^6.2.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
+    "redis": "^2.8.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
   },
@@ -58,6 +63,7 @@
     "@types/nodemailer": "^6.2.0",
     "@types/passport": "^1.0.0",
     "@types/passport-jwt": "^3.0.1",
+    "@types/redis": "^2.8.13",
     "@types/supertest": "^2.0.7",
     "@types/uuid": "^3.4.4",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
@@ -80,8 +86,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run e2e && lint-staged",
-      "pre-push": "npm run e2e",
+      "pre-commit": "npm run docker:stop & npm run docker:remove & npm run e2e && lint-staged",
+      "pre-push": "npm run docker:stop & npm run docker:remove & npm run e2e",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },

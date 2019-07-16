@@ -1,0 +1,28 @@
+version: '3'
+services:
+  bowser-api:
+    container_name: bowser-api-main
+    image: marioave/bowser
+    restart: always
+    build: .
+    ports:
+      - '6105:6105'
+    links:
+      - bowser-mongo
+      - bowser-redis
+    env_file:
+      - .env
+    environment:
+      - REDIS_PORT=6379
+      - REDIS_HOST=bowser-redis
+      - MONGODB_HOST=mongodb://bowser-mongo:27017/hotel-docker
+  bowser-mongo:
+    container_name: bowser-mongo
+    image: 'mongo:4'
+    ports:
+      - '27017:27017'
+  bowser-redis:
+    container_name: bowser-redis
+    image: 'redis:5'
+    ports:
+      - '6379:6379'
