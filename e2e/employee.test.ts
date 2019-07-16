@@ -40,7 +40,7 @@ describe('Employee routes', () => {
         .exec();
       expect(user.status).toBe(StatusUsers.NeedChangePassword);
 
-      identifiedToken = await redis.findIdentified(user._id);
+      identifiedToken = await redis.findIdentifiedToken(user._id);
     });
 
     it('when email or phone is already registered then error add', async () => {

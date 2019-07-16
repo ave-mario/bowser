@@ -31,7 +31,7 @@ async function createEmployee(
 ): Promise<string> {
   await agent.post('/api/employees').send(newEmployee);
   const user = await Employee.findOne({ email: newEmployee.email });
-  let identifiedToken = await redis.findIdentified(user._id);
+  let identifiedToken = await redis.findIdentifiedToken(user._id);
 
   return identifiedToken;
 }

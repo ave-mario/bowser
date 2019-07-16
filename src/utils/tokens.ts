@@ -12,10 +12,9 @@ class Tokens {
   }
 
   public generationTokens(id: string, role: string): ITokens {
-    const tokenId: string = uuid();
     return {
-      accessToken: this.generateAccessToken(tokenId, role, id),
-      refreshToken: this.generateRefreshToken(tokenId, role, id)
+      accessToken: this.generateAccessToken(id, role),
+      refreshToken: this.generateRefreshToken(id, role)
     };
   }
 
@@ -34,20 +33,29 @@ class Tokens {
     this._tokensToDB.deleteIdentified(userId);
   }
 
-  private generateAccessToken(tokenId: string, role: string, _id: string): string {
-    const token = this.generate(_id, config.jwt.accessExpiration, role);
-    this._tokensToDB.saveAccess(tokenId, _id);
+  private generateAccessToken(userId: string, role: string): string {
+    const tokenId = uuid();
+    const token = this.generate(userId, config.jwt.accessExpiration, role, tokenId);
+    this._tokensToDB.saveAccess(tokenId, userId);
     return token;
   }
 
-  private generateRefreshToken(_id: string, role: string, userId: string): string {
-    this._tokensToDB.saveRefresh(_id, userId, role);
-
-    return this.generate(_id, config.jwt.refreshExpiration, role);
+  private generateRefreshToken(userId: string, role: string): string {
+    const tokenId = uuid();
+    this._tokensToDB.saveRefresh(tokenId, userId);
+    return this.generate(userId, config.jwt.refreshExpiration, role, tokenId);
   }
 
-  private generate(id: string, expiresIn: string | number, role: string): string {
-    let payload = { id, role };
+  private generate(
+    sub: string,
+    expiresIn: string | number,
+    role: string,
+    id?: string
+  ): string {
+    let payload: { sub: string; role: string; id?: string } = { sub, role };
+    if (id) {
+      payload.id = id;
+    }
 
     const token = jwt.sign(payload, config.jwt.secret, { expiresIn });
 

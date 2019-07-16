@@ -2,12 +2,13 @@ import { ISaveTokens } from '../models';
 import { Token, IEmployeeModel, IdentifiedToken } from '../../models';
 
 export class SaveTokenToMongoDB implements ISaveTokens {
-  public findIdentified(userId: string): string {
+  public findRefreshToken(key: string): string {
     throw new Error('Method not implemented.');
   }
-  public findUser(key: string, name: string): Promise<{ userId: string; role: string }> {
+  public findIdentifiedToken(key: string): string {
     throw new Error('Method not implemented.');
   }
+
   public findAccessToken(key: string): string {
     throw new Error('Method not implemented.');
   }

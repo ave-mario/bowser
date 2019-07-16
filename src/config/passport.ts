@@ -22,13 +22,12 @@ export class Passport {
           token: any,
           done: (error: any, user?: IEmployee | IClient, info?: string) => void
         ) => {
-          let userId;
-          const tokenRefresh = await this.Token.findUser(token.id, TokensNames.Refresh);
+          const tokenRefresh = await this.Token.findRefreshToken(token.sub, token.id);
           if (!tokenRefresh) {
             return done(null);
           }
-          userId = tokenRefresh.userId;
-          return Passport.getUser(tokenRefresh.role, userId).then(user => {
+          this.Token.deleteAccessRefresh(token.id);
+          return Passport.getUser(token.role, token.sub).then(user => {
             if (user) {
               return done(null, user, token.role);
             } else {
@@ -43,10 +42,10 @@ export class Passport {
       new Strategy(
         option,
         async (token: any, done: (error: any, user?: IEmployee | boolean) => void) => {
-          const identified = await this.Token.findIdentified(token.id);
+          const identified = await this.Token.findIdentifiedToken(token.sub);
           let user = null;
           if (identified) {
-            user = await Employee.findById(token.id);
+            user = await Employee.findById(token.sub);
           }
           if (user) {
             return done(null, user);
@@ -60,12 +59,15 @@ export class Passport {
     passport.use(
       new Strategy(
         option,
-        (
+        async (
           token: any,
           done: (error: any, user?: IEmployee | IClient, info?: string) => void
         ) => {
-          let userId: string = token.id;
-          return Passport.getUser(token.role, userId).then(user => {
+          const isValid = await this.Token.findRefreshToken(token.sub, token.id);
+          if (!isValid) {
+            return done(null);
+          }
+          return Passport.getUser(token.role, token.sub).then(user => {
             if (user) {
               return done(null, user, token.role);
             } else {

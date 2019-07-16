@@ -28,7 +28,7 @@ export interface ISaveTokens {
   deleteAccessRefresh(tokenId: string): void;
   deleteIdentified(userId: string): void;
 
-  findUser(key: string, name: string): Promise<{ userId: string; role: string }>;
-  findAccessToken(key: string): string;
-  findIdentified(userId: string): string;
+  findAccessToken(key: string, value?: string): string;
+  findRefreshToken(key: string, value?: string): string;
+  findIdentifiedToken(key: string): string;
 }

@@ -1,5 +1,4 @@
 import { ISaveTokens } from '../models';
-import { IEmployeeModel } from '../../models';
 import { TokensNames } from '../../enums';
 import { RedisService } from '.';
 import { ISaver } from '../services';
@@ -9,15 +8,14 @@ export class SaveTokenToRedis implements ISaveTokens {
   private redis: ISaver = new RedisService();
   private getFullKey = (key: string, name: string): string => [key, name].join(':');
 
-  public saveRefresh(refreshId: string, userId: string, role: string): void {
-    const key = this.getFullKey(TokensNames.Refresh, refreshId);
-    const values = ['userId', userId, 'role', role];
-    this.redis.setHmset(key, values, config.jwt.refreshExpiration);
+  public saveRefresh(refreshId: string, userId: string): void {
+    const key = this.getFullKey(TokensNames.Refresh, userId);
+    this.redis.setValue(key, refreshId, config.jwt.refreshExpiration);
   }
 
-  public async saveAccess(access: string, userId: string): Promise<void> {
-    const key = this.getFullKey(TokensNames.Access, access);
-    await this.redis.setValue(key, userId, config.jwt.accessExpiration);
+  public saveAccess(access: string, userId: string): void {
+    const key = this.getFullKey(TokensNames.Access, userId);
+    this.redis.setValue(key, access, config.jwt.accessExpiration);
   }
 
   public saveIdentified(token: string, userId: string): void {
@@ -39,22 +37,18 @@ export class SaveTokenToRedis implements ISaveTokens {
     this.deleteToken(TokensNames.Identified, userId);
   }
 
-  public findAccessToken(accessToken: string): string {
+  public findAccessToken(accessToken: string, tokenId: string): string {
     const key = this.getFullKey(TokensNames.Access, accessToken);
     return this.redis.getValue(key);
   }
 
-  public findIdentified(userId: string): string {
+  public findIdentifiedToken(userId: string): string {
     const key = this.getFullKey(TokensNames.Identified, userId);
     return this.redis.getValue(key);
   }
 
-  public async findUser(
-    tokenRefreshId: string
-  ): Promise<{ userId: string; role: string }> {
-    const key = this.getFullKey(TokensNames.Refresh, tokenRefreshId);
-    const values = await this.redis.getHAllValue(key);
-    await this.deleteAccessRefresh(tokenRefreshId);
-    return values;
+  public findRefreshToken(userId: string, tokenId: string): string {
+    const key = this.getFullKey(TokensNames.Refresh, userId);
+    return this.redis.getValue(key);
   }
 }
