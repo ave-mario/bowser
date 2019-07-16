@@ -1,6 +1,7 @@
 # Logs
 logs
 *.log
+*.log.txt
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -84,3 +85,4 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+redis.sh.log.txt
